@@ -1,0 +1,11 @@
+matlab-common -- common functions for toolboxes
+
+(c) 2014, Till Biskup
+All rights reserved.
+
+For detailed licensing information see the file "COPYING" in the same directory.
+
+PURPOSE:
+
+The functions in this toolbox support other toolboxes. Therefore, this toolbox is a bit of a "meta toolbox". Generally this toolbox will get included into all the other toolboxes eventually.
+
