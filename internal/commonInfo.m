@@ -5,7 +5,7 @@ function varargout = commonInfo(varargin)
 %
 % If called with an output parameter, commonInfo returns a structure
 % "info" that contains all the information known to Matlab(r) about the
-% command toolbox.
+% common toolbox.
 %
 % Usage
 %   commonInfo
@@ -55,7 +55,8 @@ function varargout = commonInfo(varargin)
 % See also VER
 
 % (c) 2007-14, Till Biskup
-% 2014-04-06
+% (c) 2014, Deborah Meyer
+% 2014-04-07
 
 % The place to centrally manage the revision number and date is the file
 % "Contents.m" in the root directory of the common toolbox.
