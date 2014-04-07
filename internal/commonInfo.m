@@ -95,27 +95,44 @@ info.description = ...
 [path,~,~] = fileparts(mfilename('fullpath'));
 info.path = path(1:end-9);
 
-info = parseContentsFile(info);
-
+% Handle situation that we get called from another function with info
+% structure as an argument
 if nargin
-    switch lower(varargin{1})
-        case 'version'
-            varargout{1} = ...
-                sprintf('%s %s',info.version.Version,info.version.Date);
-        case 'url'
-            varargout{1} = info.url;
-        case 'dir'
-            varargout{1} = info.path;
-        case 'modules'
-            varargout{1} = getModuleInfo(info);
-        otherwise
+    arginIsStruct = cellfun(@(x)isstruct(x),varargin);
+    if any(arginIsStruct)
+        info = varargin{arginIsStruct};
+        varargin(arginIsStruct) = [];
     end
-elseif nargout
-    varargout{1} = info;
+    if ~isempty(varargin)
+        command = varargin{1};
+    end
+elseif ~nargout
+    command = 'display';
 else
-    displayInfoOnCommandLine(info);
+    command = 'structure';
 end
 
+info = parseContentsFile(info);
+
+switch lower(command)
+    case 'structure'
+        varargout{1} = info;
+    case 'display'
+        displayInfoOnCommandLine(info);
+        if nargout
+            varargout{1} = info;
+        end
+    case 'version'
+        varargout{1} = ...
+            sprintf('%s %s',info.version.Version,info.version.Date);
+    case 'url'
+        varargout{1} = info.url;
+    case 'dir'
+        varargout{1} = info.path;
+    case 'modules'
+        varargout{1} = getModuleInfo(info);
+    otherwise
+end
 end % End of main function
 
 
