@@ -2,26 +2,25 @@ function commonInstall(varargin)
 % COMMONINSTALL Installing the common Toolbox or any other toolbox
 % specified on your system. 
 %
-% If called with no input parameter, commonInstall will install the common
-% Toolbox, if called with an additional parameter, it will try to install
-% the toolbox identified by that optional parameter.
+% If called directly, commonInstall will install the common Toolbox, if
+% called from within the install routine of another toolbox, it will try to
+% install the toolbox identified by that routine. 
 %
 % Usage
 %   commonInstall
-%   status = commonInstall
-%
-%   status    - string
-%               Empty if everything went fine, otherwise contains message.
 %
 
 % (c) 2012-14, Till Biskup
+% (c) 2014, Deborah Meyer
 % 2014-04-08
 
 [toolboxPath,toolboxPrefix] = getToolboxPathAndPrefix;
 
 installed = checkInstallStatus(toolboxPath);
 
-if ~plotWelcomeMessage(installed,toolboxPrefix);
+plotWelcomeMessage(installed,toolboxPrefix);
+
+if ~shallWeContinue(installed)
     return;
 end
 
@@ -56,10 +55,7 @@ end
 
 %% Subfunction: checkInstallStatus
 function installed = checkInstallStatus(toolboxPath)
-installed = false;
-if any(strfind(path,toolboxPath))
-    installed = true;
-end
+installed = any(strfind(path,toolboxPath));
 end
 
 %% Subfunction: plotWelcomeMessage
@@ -85,6 +81,22 @@ fprintf(' on your system.\n');
 fprintf('\n');
 fprintf('==================================================================\n');
 fprintf('\n');
+end
+
+%% Sub(sub)function: getToolboxInfoFunction
+function infoFunction = getToolboxInfoFunction(toolboxPrefix)
+if isstrprop(toolboxPrefix(end),'lower')
+    infoFunction = str2func([toolboxPrefix 'Info']);
+else
+    infoFunction = str2func([toolboxPrefix 'info']);
+end
+end
+
+%% Subfunction: shallWeContinue 
+function TrueOrFalse = shallWeContinue(installed)
+
+TrueOrFalse = false;
+
 if installed
     userQuestion = 'Do you want to update the toolbox now? Y/n [Y]: ';
 else
@@ -95,22 +107,13 @@ if isempty(reply)
     reply = 'Y';
 end
 if strcmpi(reply,'y')
-    status = true;
+    TrueOrFalse = true;
 else
     if installed
         fprintf('\nUpdate aborted... good-bye.\n\n');
     else
         fprintf('\nInstallation aborted... good-bye.\n\n');
     end
-end
-end
-
-%% Subfunction: getToolboxInfoFunction
-function infoFunction = getToolboxInfoFunction(toolboxPrefix)
-if isstrprop(toolboxPrefix(end),'lower')
-    infoFunction = str2func([toolboxPrefix 'Info']);
-else
-    infoFunction = str2func([toolboxPrefix 'info']);
 end
 end
 
@@ -125,7 +128,7 @@ if installed
 else
     fprintf('\nAdding ');
 end
-fprintf('the following paths in the Matlab(tm) search path:\n\n');
+fprintf('the following paths to the Matlab(tm) search path:\n\n');
 cellfun(@(x)fprintf('  %s\n',char(x)),paths);
 
 % Actually add
@@ -157,6 +160,7 @@ function directories = getToolboxPaths(path)
 % GETTOOLBOXPATHS Internal function returning all subdirectories of the
 % current toolbox installation.
 directories = cell(0);
+directories{1} = path;
 traverse(path);
     function traverse(directory)
         list = dir(directory);
