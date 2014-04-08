@@ -7,56 +7,70 @@ function varargout = commonInfo(varargin)
 % "info" that contains all the information known to Matlab(r) about the
 % common toolbox.
 %
+% If called with "infoStructure" as optional input parameter (mostly via
+% info function of another toolbox), returns info for the specific toolbox
+% this infoStructure comes from. 
+%
 % Usage
 %   commonInfo
+%   commonInfo(infoStructure)
 %
 %   info = commonInfo;
+%   info = commonInfo(infoStructure);
 %
 %   version = commonInfo('version')
+%   version = commonInfo('version',infoStructure)
+%   version = commonInfo(infoStructure,'version')
+%
 %   url = commonInfo('url')
 %   dir = commonInfo('dir')
 %   modules = commonInfo('modules')
 %
-%   info    - struct
-%             Fields: maintainer, url, bugtracker, vcs, version, path
+%   info          - struct
+%                   Fields: maintainer, url, bugtracker, vcs, version, path
 %
-%             maintainer - struct
-%                          Fields: name, email
+%                   maintainer - struct
+%                                Fields: name, email
 %
-%             url        - string
-%                          URL of the toolbox website
+%                   url        - string
+%                                URL of the toolbox website
 %
-%             bugtracker - struct
-%                          Fields: type, url
+%                   bugtracker - struct
+%                                Fields: type, url
 %
-%             vcs        - struct
-%                          Fields: type, url
+%                   vcs        - struct
+%                                Fields: type, url
+%      
+%                   version    - struct
+%                                Fields: Name, Version, Release, Date
+%                                This struct is identical to the output of
+%                                the Matlab(r) "ver" command.
 %
-%             version    - struct
-%                          Fields: Name, Version, Release, Date
-%                          This struct is identical to the output of the
-%                          Matlab(r) "ver" command.
+%                   path       - string
+%                                installation directory of the toolbox
 %
-%             path       - string
-%                          installation directory of the toolbox
+%   version       - string
+%                   <version> yyyy-mm-dd
 %
-%   version - string
-%             <version> yyyy-mm-dd
+%   url           - string
+%                   URL of the toolbox website
 %
-%   url     - string
-%             URL of the toolbox website
+%   dir           - string
+%                   installation directory of the toolbox
 %
-%   dir     - string
-%             installation directory of the toolbox
+%   modules       - cell array of structs
+%                   Struct fields: maintainer, url, bugtracker, vcs,
+%                   version, path
 %
-%   modules - cell array of structs
-%             Struct fields: maintainer, url, bugtracker, vcs, version, path
+%   infoStructure - struct
+%                   Same fields as "info" above
+%                   Used if called from the info command of another toolbox
 %
-% See also VER
+% SEE ALSO ver
 
 % (c) 2007-14, Till Biskup
 % (c) 2014, Deborah Meyer
-% 2014-04-07
+% 2014-04-08
 
 % The place to centrally manage the revision number and date is the file
 % "Contents.m" in the root directory of the common toolbox.
@@ -90,6 +104,11 @@ info.vcs = struct(...
     );
 info.description = ...
     'a Matlab toolbox providing infrastructure for other toolboxes';
+
+% Preassign output
+if nargout
+    varargout{1} = '';
+end
 
 % Get install directory
 [path,~,~] = fileparts(mfilename('fullpath'));
@@ -132,6 +151,8 @@ switch lower(command)
     case 'modules'
         varargout{1} = getModuleInfo(info);
     otherwise
+        warning('commonInfo:unknownCommand',...
+            'Command %s not understood.',command);
 end
 end % End of main function
 
