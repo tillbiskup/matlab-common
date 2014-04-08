@@ -175,16 +175,17 @@ traverse(path);
 end
 
 %% Subfunction: createConfigurationDirectory
-function createConfigurationDirectory
-confDir = commonParseDir('~/.trepr');
+function confDir = createConfigurationDirectory(toolboxPrefix)
+confDir = commonParseDir(['~/.matlab-toolboxes/' toolboxPrefix]);
 if ~exist(confDir,'dir')
     try
         fprintf('\nCreating local config directory... ');
         mkdir(confDir);
         fprintf('done.\n');
     catch exception
-        status = exception.message;
         fprintf('failed!\n');
+        disp(exception.message);
+        confDir = '';
     end
 end
 end
