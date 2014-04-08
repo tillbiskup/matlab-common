@@ -48,7 +48,7 @@ else
 end
 
 [toolboxPath,~,~] = fileparts(stack(stackIndex).file);
-toolboxPath = toolboxPath(1:end-length('internal/'));
+toolboxPath = toolboxPath(1:end-length('/internal'));
 toolboxPrefix = stack(stackIndex).name(1:end-length('install'));
 
 end
