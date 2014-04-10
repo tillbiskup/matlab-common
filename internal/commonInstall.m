@@ -9,6 +9,9 @@ function commonInstall(varargin)
 % Usage
 %   commonInstall
 %
+% NOTE FOR TOOLBOX DEVELOPERS:
+% PREFIXinstall normally only calls commonInstall. If necessary, additional
+% tasks can be performed as well.
 
 % (c) 2012-14, Till Biskup
 % (c) 2014, Deborah Meyer

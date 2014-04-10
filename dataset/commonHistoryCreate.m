@@ -9,10 +9,52 @@ function history = commonHistoryCreate(varargin)
 %   history       - struct
 %                   Structure complying with minimal history record
 %
+%                   date         - string
+%                                  timestamp "yyyy-mm-dd HH:MM:SS"
+%
+%                   system       - struct
+%                                  username - string
+%                                  platform - string
+%                                  matlab   - string
+%                                  toolbox  - struct
+%                                  
+%                   functionName - string
+%                                  name of Matlab function used
+%
+%                   parameters   - cell array
+%                                  input parameters of function defined in
+%                                  "functionName"
+%
+%                   kind         - string
+%                                  kind of operation
+%                                  examples: "phase correction"
+%
+%                   purpose      - string
+%                                  Short description why the operation was
+%                                  performed
+%
+%                   comment      - cell array
+%                                  Any additional comment
+%
+%                   format       - array of structs
+%                                  Information about the history record
+%                                  format for each of the toolboxes.
+%
+%                                  The first struct, format(1), always
+%                                  refers to the common toolbox.
+%
+%                                  fields: type, version
+%
 %   versionString - string (OPTIONAL)
 %                   version information of specific history record
 %                   Only used when called from within another function of
 %                   the scheme "PREFIXhistoryCreate" from another toolbox.
+%
+% NOTE FOR TOOLBOX DEVELOPERS:
+% PREFIXhistoryCreate calls commonHistoryCreate with versionString as input
+% parameter and optionally adds own fields as necessary. Information about
+% the PREFIX toolbox as well as the respective history format gets added
+% automatically.
 %
 % SEE ALSO: commonDatasetCreate
 

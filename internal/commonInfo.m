@@ -76,6 +76,11 @@ function varargout = commonInfo(varargin)
 %                   Same fields as "info" above
 %                   Used if called from the info command of another toolbox
 %
+% NOTE FOR TOOLBOX DEVELOPERS:
+% PREFIXinfo defines the toolbox-specific fields and afterwards calls
+% commonInfo to take care of the output. See online documentation for
+% details.
+%
 % SEE ALSO ver, version
 
 % (c) 2007-14, Till Biskup
