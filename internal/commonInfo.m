@@ -179,13 +179,15 @@ function toolboxPrefix = getToolboxPrefix
 
 [stack,~] = dbstack('-completenames');
 
-if length(stack)>2 && strcmpi(stack(3).name(end-3:end),'info')
+suffix = 'info';
+
+if length(stack)>2 && strcmpi(stack(3).name(end-length(suffix)-1:end),suffix)
     stackIndex = 3;
 else
     stackIndex = 2;
 end
 
-toolboxPrefix = stack(stackIndex).name(1:end-length('Info'));
+toolboxPrefix = stack(stackIndex).name(1:end-length(suffix));
     
 end
 

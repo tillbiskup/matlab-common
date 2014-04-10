@@ -112,13 +112,16 @@ function infoFunction = getToolboxInfoFunction
 
 [stack,~] = dbstack('-completenames');
 
-if length(stack)>2
+suffix = 'HistoryCreate';
+
+if length(stack)>2 && strcmpi(...
+        stack(3).name(end-length(suffix)+1:end),suffix)
     stackIndex = 3;
 else
     stackIndex = 2;
 end
 
-toolboxPrefix = stack(stackIndex).name(1:end-length('HistoryCreate'));
+toolboxPrefix = stack(stackIndex).name(1:end-length(suffix));
 
 if isstrprop(toolboxPrefix(end),'lower')
     infoFunction = str2func([toolboxPrefix 'Info']);
