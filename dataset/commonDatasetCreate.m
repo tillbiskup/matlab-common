@@ -25,9 +25,11 @@ function dataset = commonDatasetCreate(varargin)
 %
 % Hint: Parameters can be provided as a structure with the fieldnames
 % corresponding to the parameter names specified above.
+%
+% SEE ALSO: commonHistoryCreate
 
 % (c) 2014, Till Biskup
-% 2014-04-09
+% 2014-04-10
 
 % Assign output parameter
 dataset = struct();
@@ -72,10 +74,19 @@ dataset.parameters = struct(...
 %       parameters. Therefore, you have to add them explicitly afterwards.
 dataset.parameters.purpose = cell(0);
 
-dataset.sample = struct();
+dataset.sample = struct(...
+    'name','' ...
+    );
+dataset.sample.description = cell(0);
+dataset.sample.buffer = cell(0);
+dataset.sample.preparation = cell(0);
+
 dataset.comment = cell(0);
 dataset.history = cell(0);
-dataset.file = struct();
+dataset.file = struct(...
+    'name','', ...
+    'format','' ...
+    );
 dataset.format = struct(...
     'type','common dataset',...
     'version',version ...

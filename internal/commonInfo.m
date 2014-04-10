@@ -223,7 +223,7 @@ fprintf('\n');
 fprintf(' Release:         %s %s\n',info.version.Version,info.version.Date);
 fprintf(' Directory:       %s\n',info.path);
 fprintf(' Matlab version:  %s\n',version);
-fprintf(' Platform:        %s\n',platform);
+fprintf(' Platform:        %s\n',commonPlatform);
 fprintf('\n');
 fprintf(' Homepage:        <a href="%s">%s</a>\n',info.url,info.url);
 for k=1:length(info.maintainer)
