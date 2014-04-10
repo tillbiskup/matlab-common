@@ -46,7 +46,7 @@ p.addParamValue('hasCalculated',false,@islogical);
 p.parse(varargin{:});
 
 % Define version of dataset structure
-version = '0.1';
+structureVersion = '0.1';
 
 dataset.data = [];
 dataset.origdata = [];
@@ -89,7 +89,7 @@ dataset.file = struct(...
     );
 dataset.format = struct(...
     'type','common dataset',...
-    'version',version ...
+    'version',structureVersion ...
     );
 dataset.label = '';
 
