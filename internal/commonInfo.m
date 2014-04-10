@@ -27,27 +27,37 @@ function varargout = commonInfo(varargin)
 %   modules = commonInfo('modules')
 %
 %   info          - struct
-%                   Fields: maintainer, url, bugtracker, vcs, version, path
+%                   Fields: maintainer, url, bugtracker, vcs, description,
+%                   version, path, prefix, name
 %
-%                   maintainer - struct
-%                                Fields: name, email
+%                   maintainer  - struct
+%                                 Fields: name, email
 %
-%                   url        - string
-%                                URL of the toolbox website
+%                   url         - string
+%                                 URL of the toolbox website
 %
-%                   bugtracker - struct
-%                                Fields: type, url
+%                   bugtracker  - struct
+%                                 Fields: type, url
 %
-%                   vcs        - struct
-%                                Fields: type, url
+%                   vcs         - struct
+%                                 Fields: type, url
+%
+%                   description - string
+%                                 short description of the toolbox
 %      
-%                   version    - struct
-%                                Fields: Name, Version, Release, Date
-%                                This struct is identical to the output of
-%                                the Matlab(r) "ver" command.
+%                   version     - struct
+%                                 Fields: Name, Version, Release, Date
+%                                 This struct is identical to the output of
+%                                 the Matlab(r) "ver" command.
 %
-%                   path       - string
-%                                installation directory of the toolbox
+%                   path        - string
+%                                 installation directory of the toolbox
+%
+%                   prefix      - string
+%                                 prefix of the toolbox
+%
+%                   name        - string
+%                                 name of the toolbox
 %
 %   version       - string
 %                   <version> yyyy-mm-dd
@@ -66,11 +76,11 @@ function varargout = commonInfo(varargin)
 %                   Same fields as "info" above
 %                   Used if called from the info command of another toolbox
 %
-% SEE ALSO ver
+% SEE ALSO ver, version
 
 % (c) 2007-14, Till Biskup
 % (c) 2014, Deborah Meyer
-% 2014-04-08
+% 2014-04-10
 
 % The place to centrally manage the revision number and date is the file
 % "Contents.m" in the root directory of the common toolbox.
@@ -131,6 +141,9 @@ else
     command = 'structure';
 end
 
+% Get prefix
+info.prefix = getToolboxPrefix;
+
 info = parseContentsFile(info);
 
 switch lower(command)
@@ -156,6 +169,20 @@ switch lower(command)
 end
 end % End of main function
 
+
+function toolboxPrefix = getToolboxPrefix
+
+[stack,~] = dbstack('-completenames');
+
+if length(stack)>2 && strcmpi(stack(3).name(end-3:end),'info')
+    stackIndex = 3;
+else
+    stackIndex = 2;
+end
+
+toolboxPrefix = stack(stackIndex).name(1:end-length('Info'));
+    
+end
 
 function info = parseContentsFile(info)
 % For all version information, parse the "Contents.m" file located in the

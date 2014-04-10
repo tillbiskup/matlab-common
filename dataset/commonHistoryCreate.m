@@ -1,12 +1,18 @@
-function history = commonHistoryCreate
+function history = commonHistoryCreate(varargin)
 % COMMONHISTORYCREATE Create and return data structure of most general
 % history record.
 %
 % Usage
 %   history = commonHistoryCreate
+%   history = commonHistoryCreate(versionString)
 %
-%   history - struct
-%             Structure complying with minimal history record
+%   history       - struct
+%                   Structure complying with minimal history record
+%
+%   versionString - string (OPTIONAL)
+%                   version information of specific history record
+%                   Only used when called from within another function of
+%                   the scheme "PREFIXhistoryCreate" from another toolbox.
 %
 % SEE ALSO: commonDatasetCreate
 
@@ -43,6 +49,19 @@ history.format(1) = struct(...
     'type','common history',...
     'version',structureVersion ...
     );
+
+% Add format information for derived history record from other toolbox.
+if ~strcmpi(toolboxInfo.prefix,'common')
+    if nargin
+        derivedStructureVersion = varargin{1};
+    else
+        derivedStructureVersion = '';
+    end
+    history.format(end+1) = struct(...
+        'type',[toolboxInfo.prefix ' history'],...
+        'version',derivedStructureVersion ...
+        );
+end
     
 end
 
