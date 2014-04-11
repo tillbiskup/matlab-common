@@ -15,6 +15,16 @@ function table = commonDatasetMappingTable
 %           3rd column: modifier telling dataasetMapInfo how to modify the
 %           field from the info file to fit into the dataset
 %
+%           Currently allowed (case insensitive) modifiers contain:
+%           join, joinWithSpace, splitValueUnit, str2double
+%
+%           See the source code of commonDatasetMapInfo for more info
+%
+% NOTE FOR TOOLBOX DEVELOPERS:
+% Use commonInfofileMappingTableHelper to create the basic structure of the
+% cell array "table" and create your own PREFIXdatasetMappingTable function
+% as a copy of this function.
+%
 % SEE ALSO: commonDatasetMapInfo, commonDatasetCreate, commonInfofileLoad,
 % commonInfofileMappingTableHelper
 

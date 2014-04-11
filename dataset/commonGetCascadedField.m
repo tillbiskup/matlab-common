@@ -89,23 +89,10 @@ try
         end
     end
 catch exception
-    try
-        disp(fieldName);
-        disp(struct);
-        msgStr = ['An exception occurred in ' ...
-            exception.stack(1).name  '.'];
-        trEPRmsg(msgStr,'error');
-    catch exception2
-        exception = addCause(exception2, exception);
-        disp(msgStr);
-    end
-    try
-        trEPRgui_bugreportwindow(exception);
-    catch exception3
-        % If even displaying the bug report window fails...
-        exception = addCause(exception3, exception);
-        throw(exception);
-    end
+    disp(fieldName);
+    disp(struct);
+    disp(['An exception occurred in ' ...
+        exception.stack(1).name  '.']);
 end
 
 end
