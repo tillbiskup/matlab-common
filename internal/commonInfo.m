@@ -85,7 +85,7 @@ function varargout = commonInfo(varargin)
 
 % (c) 2007-14, Till Biskup
 % (c) 2014, Deborah Meyer
-% 2014-04-10
+% 2014-04-11
 
 % The place to centrally manage the revision number and date is the file
 % "Contents.m" in the root directory of the common toolbox.
@@ -181,7 +181,7 @@ function toolboxPrefix = getToolboxPrefix
 
 suffix = 'info';
 
-if length(stack)>2 && strcmpi(stack(3).name(end-length(suffix)-1:end),suffix)
+if length(stack)>2 && strcmpi(stack(3).name(end-length(suffix)+1:end),suffix)
     stackIndex = 3;
 else
     stackIndex = 2;
