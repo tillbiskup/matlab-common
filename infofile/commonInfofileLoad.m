@@ -11,9 +11,12 @@ function metaData = commonInfofileLoad(filename)
 %
 %   metaData - struct
 %              Hierarchical structure containing metadata from info file
+%
+% For a description of the specification of the info file format, see
+%   http://www.till-biskup.de/en/software/info/
 
 % (c) 2014, Till Biskup
-% 2014-04-09
+% 2014-04-11
 
 metaData = struct();
 
@@ -30,6 +33,8 @@ if isempty(infoFileContents)
     fprintf('Problems reading info file "%s".\n',filename);
     return;
 end
+
+infoFileContents = removeCommentLines(infoFileContents);
 
 metaData = parseInfoFileContents(infoFileContents);
 if isempty(metaData)
@@ -78,6 +83,16 @@ filename = fullfile(path,[name '.info']);
 if exist(filename,'file')
     checkedFilename = filename;
 end
+
+end
+
+function infoFileContents = removeCommentLines(infoFileContents)
+% REMOVECOMMENTLINES Remove lines starting with comment character
+%   infoFileContents - cell array
+
+infoFileContents(cellfun(...
+    @(x)~isempty(x) && strcmpi(x(1),'%'),...
+    infoFileContents)) = [];
 
 end
 
@@ -133,10 +148,18 @@ function parsedBlock = parseInfoFileBlock(infoFileBlock)
 
 parsedBlock = struct();
 for blockLine = 1:length(infoFileBlock)
-    % Separate line along delimiter, ":" in this case
-    blockLineParts = regexp(infoFileBlock{blockLine},':','split','once');
-    parsedBlock.(sanitiseFieldName(strtrim(blockLineParts{1}))) = ...
-        strtrim(blockLineParts{2});
+    if isspace(infoFileBlock{blockLine}(1)) && blockLine > 1
+        % If line starts with whitespace
+        blockLineParts = regexp(infoFileBlock{blockLine-1},':','split','once');
+        parsedBlock.(sanitiseFieldName(strtrim(blockLineParts{1}))) = [ ...
+            parsedBlock.(sanitiseFieldName(strtrim(blockLineParts{1}))) ...
+            ' ' strtrim(infoFileBlock{blockLine})];
+    else
+        % Separate line along delimiter, ":" in this case
+        blockLineParts = regexp(infoFileBlock{blockLine},':','split','once');
+        parsedBlock.(sanitiseFieldName(strtrim(blockLineParts{1}))) = ...
+            strtrim(blockLineParts{2});
+    end
 end
 
 end
