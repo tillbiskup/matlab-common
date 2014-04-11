@@ -7,13 +7,16 @@ function table = commonDatasetMappingTable
 %
 %   table - cell (nx3)
 %           1st column: field of info structure returned by
-%           commonInfofileLoad 
+%           commonInfofileLoad
+%
 %           2nd column: corresponding field in dataset structure as
-%           returned by commonDatasetCreate 
+%           returned by commonDatasetCreate
+%
 %           3rd column: modifier telling dataasetMapInfo how to modify the
 %           field from the info file to fit into the dataset
 %
-% SEE ALSO: commonDatasetMapInfo, commonDatasetCreate, commonInfofileLoad
+% SEE ALSO: commonDatasetMapInfo, commonDatasetCreate, commonInfofileLoad,
+% commonInfofileMappingTableHelper
 
 % (c) 2014, Till Biskup
 % 2014-04-11
