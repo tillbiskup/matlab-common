@@ -8,10 +8,11 @@ function stdDev = commonFitStdDev(jacobian,variance)
 %            jacobian matrix of size n x p
 %            n is the number of experimental data points
 %            p is the number of fitted parameters
-%            seventh output of 'lsqcurvefit'
+%            seventh output argument of 'lsqcurvefit'
 %
 % variance - double
-%            variance of residuals
+%            variance of residuals => var(residuals)
+%            'residuals' is third output argrument of 'lsqcurvefit'
 %
 % stdDev   - vector
 %            contains the standard deviations for all p fit parameters
@@ -29,7 +30,7 @@ function stdDev = commonFitStdDev(jacobian,variance)
 %
 
 % (c) 2014, Bernd Paulus
-% 2014-04-29
+% 2014-05-02
 
 % perform QR factorization on J
 [~,R] = qr(jacobian,0);
