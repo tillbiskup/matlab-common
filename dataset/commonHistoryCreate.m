@@ -58,8 +58,8 @@ function history = commonHistoryCreate(varargin)
 %
 % SEE ALSO: commonDatasetCreate
 
-% (c) 2014, Till Biskup
-% (c) 2014, Deborah Meyer
+% Copyright (c) 2014, Till Biskup
+% Copyright (c) 2014, Deborah Meyer
 % 2014-04-10
 
 % Define version of dataset structure

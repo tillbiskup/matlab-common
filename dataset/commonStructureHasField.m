@@ -14,7 +14,7 @@ function trueOrFalse = commonStructureHasField(structure,field)
 %
 % SEE ALSO: isfield
 
-% (c) 2014, Till Biskup
+% Copyright (c) 2014, Till Biskup
 % 2014-04-11
 
 nDots = strfind(field,'.');

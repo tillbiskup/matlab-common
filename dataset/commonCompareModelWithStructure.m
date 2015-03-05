@@ -15,7 +15,7 @@ function [missing,wrong] = commonCompareModelWithStructure(model,structure)
 %
 % SEE ALSO: commonDatasetCheck
 
-% (c) 2014, Till Biskup
+% Copyright (c) 2014, Till Biskup
 % 2014-04-10
 
 missing = cell(0);

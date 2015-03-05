@@ -22,7 +22,7 @@ function [missingFields,wrongType] = commonDatasetCheck(dataset)
 %
 % SEE ALSO: commonDatasetCreate
 
-% (c) 2014, Till Biskup
+% Copyright (c) 2014, Till Biskup
 % 2014-04-10
 
 % Get structure of dataset corresponding to current toolbox

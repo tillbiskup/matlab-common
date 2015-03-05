@@ -25,8 +25,8 @@ function struct = commonSetCascadedField(struct, fieldName, value, varargin)
 %
 % SEE ALSO: commonGetCascadedField
 
-% (c) 2011-14, Till Biskup
-% (c) 2011-13, Bernd Paulus
+% Copyright (c) 2011-14, Till Biskup
+% Copyright (c) 2011-13, Bernd Paulus
 % 2014-04-11
 
 try
