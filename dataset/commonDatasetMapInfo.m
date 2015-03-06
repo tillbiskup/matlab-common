@@ -13,8 +13,8 @@ function dataset = commonDatasetMapInfo(dataset,info)
 %
 % SEE ALSO: commonDatasetCreate, commonInfofileLoad
 
-% Copyright (c) 2014, Till Biskup
-% 2014-04-11
+% Copyright (c) 2014-15, Till Biskup
+% 2015-03-06
 
 mapping = getMappingTable;
 
@@ -61,6 +61,29 @@ end
 
 end
 
+
+%% Subfunction: getMappingTable
 function mapping = getMappingTable
-    mapping = commonDatasetMappingTable;
+    
+    [~,toolboxPrefix] = getToolboxPathAndPrefix;
+    mappingTableCommand = str2func(...
+        commonCamelCase({toolboxPrefix,'datasetMappingTable'}));
+    mapping = mappingTableCommand();
+end
+
+%% Subfunction: getToolboxPathAndPrefix
+function [toolboxPath,toolboxPrefix] = getToolboxPathAndPrefix
+
+[stack,~] = dbstack('-completenames');
+
+if length(stack)>3
+    stackIndex = 4;
+else
+    stackIndex = 3;
+end
+
+[toolboxPath,~,~] = fileparts(stack(stackIndex).file);
+toolboxPath = toolboxPath(1:end-length('/dataset'));
+toolboxPrefix = stack(stackIndex).name(1:end-length('DatasetMapInfo'));
+
 end

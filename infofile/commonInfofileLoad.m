@@ -15,8 +15,8 @@ function metaData = commonInfofileLoad(filename)
 % For a description of the specification of the info file format, see
 %   http://www.till-biskup.de/en/software/info/
 
-% (c) 2014, Till Biskup
-% 2014-04-11
+% Copyright (c) 2014-15, Till Biskup
+% 2015-03-06
 
 metaData = struct();
 
@@ -157,8 +157,12 @@ for blockLine = 1:length(infoFileBlock)
     else
         % Separate line along delimiter, ":" in this case
         blockLineParts = regexp(infoFileBlock{blockLine},':','split','once');
-        parsedBlock.(sanitiseFieldName(strtrim(blockLineParts{1}))) = ...
-            strtrim(blockLineParts{2});
+        if length(blockLineParts) == 2
+            parsedBlock.(sanitiseFieldName(strtrim(blockLineParts{1}))) = ...
+                strtrim(blockLineParts{2});
+        else
+            warning('Problems parsing info file. Probably missing ":"');
+        end
     end
 end
 

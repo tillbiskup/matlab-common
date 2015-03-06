@@ -13,15 +13,18 @@ function commonInstall(varargin)
 % PREFIXinstall normally only calls commonInstall. If necessary, additional
 % tasks can be performed as well.
 
-% (c) 2012-14, Till Biskup
-% (c) 2014, Deborah Meyer
-% 2014-04-08
+% Copyright (c) 2012-15, Till Biskup
+% Copyright (c) 2014-15, Deborah Meyer
+% 2015-03-06
 
 [toolboxPath,toolboxPrefix] = getToolboxPathAndPrefix;
 
+infoFunction = str2func(commonCamelCase({toolboxPrefix,'info'}));
+info = infoFunction();
+
 installed = checkInstallStatus(toolboxPath);
 
-plotWelcomeMessage(installed,toolboxPrefix);
+plotWelcomeMessage(installed,info);
 
 if ~shallWeContinue(installed)
     return;
@@ -35,7 +38,7 @@ if installed
     %updateConfiguration;
 end
 
-plotSuccessMessage(installed,toolboxPrefix);
+plotSuccessMessage(installed,toolboxPrefix,infoFunction);
 
 end
 
@@ -53,8 +56,9 @@ end
 [toolboxPath,~,~] = fileparts(stack(stackIndex).file);
 toolboxPath = toolboxPath(1:end-length('/internal'));
 toolboxPrefix = stack(stackIndex).name(1:end-length('install'));
-
+ 
 end
+
 
 %% Subfunction: checkInstallStatus
 function installed = checkInstallStatus(toolboxPath)
@@ -62,10 +66,7 @@ installed = any(strfind(path,toolboxPath));
 end
 
 %% Subfunction: plotWelcomeMessage
-function status = plotWelcomeMessage(installed,toolboxPrefix)
-
-infoFunction = getToolboxInfoFunction(toolboxPrefix);
-info = infoFunction();
+function status = plotWelcomeMessage(installed,info)
 
 status = false;
 fprintf('\n');
@@ -84,15 +85,6 @@ fprintf(' on your system.\n');
 fprintf('\n');
 fprintf('==================================================================\n');
 fprintf('\n');
-end
-
-%% Sub(sub)function: getToolboxInfoFunction
-function infoFunction = getToolboxInfoFunction(toolboxPrefix)
-if isstrprop(toolboxPrefix(end),'lower')
-    infoFunction = str2func([toolboxPrefix 'Info']);
-else
-    infoFunction = str2func([toolboxPrefix 'info']);
-end
 end
 
 %% Subfunction: shallWeContinue 
@@ -217,7 +209,7 @@ end
 end
 
 %% Subfunction: plotSuccessMessage
-function plotSuccessMessage(installed,toolboxPrefix)
+function plotSuccessMessage(installed,toolboxPrefix,infoFunction)
 fprintf('\nCongratulations! The %s Toolbox has been ',toolboxPrefix);
 if installed
     fprintf('updated ');
@@ -227,7 +219,6 @@ end
 fprintf('on your system.\n\n');
 fprintf('Please, find below a bit of information about the installation.\n\n')
 
-infoFunction = getToolboxInfoFunction(toolboxPrefix);
 infoFunction();
 
 fprintf('\n');
