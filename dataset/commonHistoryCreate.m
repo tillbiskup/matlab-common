@@ -22,8 +22,8 @@ function history = commonHistoryCreate(varargin)
 %                                  name of Matlab function used
 %
 %                   parameters   - cell array
-%                                  input parameters of function defined in
-%                                  "functionName"
+%                                  (input) parameters of function defined
+%                                  in "functionName"
 %
 %                   kind         - string
 %                                  kind of operation
@@ -45,6 +45,10 @@ function history = commonHistoryCreate(varargin)
 %
 %                                  fields: type, version
 %
+%                   tplVariables - struct
+%                                  information used for generating reports
+%                                  via templates
+%
 %   versionString - string (OPTIONAL)
 %                   version information of specific history record
 %                   Only used when called from within another function of
@@ -59,8 +63,8 @@ function history = commonHistoryCreate(varargin)
 % SEE ALSO: commonDatasetCreate
 
 % Copyright (c) 2014, Till Biskup
-% Copyright (c) 2014, Deborah Meyer
-% 2014-04-10
+% Copyright (c) 2014-15, Deborah Meyer
+% 2015-03-16
 
 % Define version of dataset structure
 structureVersion = '0.1';
@@ -80,7 +84,8 @@ history = struct(...
         ),...
     'functionName','',...
     'kind','', ...
-    'purpose','' ...
+    'purpose','', ...
+    'tplVariables',struct() ...
     );
 % NOTE: Matlab doesn't handle cells defined in structs together with other
 %       parameters. Therefore, you have to add them explicitly afterwards.
