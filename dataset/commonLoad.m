@@ -1,32 +1,56 @@
-function varargout = xmlZipRead(filename,varargin)
-% XMLZIPREAD Read ZIP-compressed XML file and data (if available)
+function varargout = commonLoad(filename,varargin)
+% COMMONLOAD Read ZIP-compressed XML file and data (if available)
 %
 % Usage:
-%   [data,warning] = xmlZipRead(filename);
+%   [data,warning] = commonLoad(filename)
+%   [data,warning] = commonLoad(filename,<parameters>)
 %
-%   filename - string
-%              name of the ZIP archive containing the XML (and data)
-%              file(s)
-%   data     - struct
-%              content of the XML file
-%              data.data holds the data read from the ZIP archive
-%   warning  - cell array
-%              Contains warnings if there are any, otherwise empty
+%   filename   - string
+%                name of the ZIP archive containing the XML (and data)
+%                file(s)
 %
-% SEE ALSO XMLZIPWRITE
+%   data       - struct
+%                content of the XML file
+%                data.data holds the data read from the ZIP archive
+%
+%   warning    - cell array
+%                Contains warnings if there are any, otherwise empty
+%
+%
+%   parameters - key-value pairs (OPTIONAL)
+%
+%                Optional parameters may include:
+%
+%                precision - string
+%                            Precision of the binary data written as binary
+%                            file. 
+%                            Default: real*8 (*)
+%
+%                extension - string
+%                            File extension used for the files the dataset
+%                            gets saved to.
+%                            Default: .xbz
+%
+% SEE ALSO commonSave
 
-% (c) 2011-14, Till Biskup
-% 2014-04-04
+% Copyright (c) 2011-15, Till Biskup
+% 2015-03-16
 
 % Parse input arguments using the inputParser functionality
-parser = inputParser;   % Create an instance of the inputParser class.
-parser.FunctionName = mfilename; % Function name included in error messages
-parser.KeepUnmatched = true; % Enable errors on unmatched arguments
-parser.StructExpand = true; % Enable passing arguments in a structure
-parser.addRequired('filename', @(x)ischar(x) || iscell(x));
+p = inputParser;            % Create inputParser instance
+p.FunctionName = mfilename; % Include function name in error messages
+p.KeepUnmatched = true;     % Enable errors on unmatched arguments
+p.StructExpand = true;      % Enable passing arguments in a structure
+p.addRequired('filename', @(x)ischar(x) || iscell(x));
+p.addParamValue('precision','real*8',@ischar);
+p.addParamValue('extension','.xbz',@ischar);
 % Note, this is to be compatible with TAload - currently without function!
-parser.addParamValue('checkFormat',logical(true),@islogical);
-parser.parse(filename);
+p.addParamValue('checkFormat',logical(true),@islogical);
+p.parse(filename);
+
+%% TODO
+% - Add handling of "origdata" files
+% - Automatic appending of extension and check for existence of that...
 
 warning = cell(0);
 
@@ -78,7 +102,7 @@ try
         [pathstr, name, ext] = fileparts(filenames{k});
         switch ext
             case '.xml'
-                xmlFileSerialize(fullfile(pathstr,[name ext]));
+                XMLfileSerialize(fullfile(pathstr,[name ext]));
                 DOMnode = xmlread(fullfile(pathstr,[name ext]));
                 struct = xml2struct(DOMnode);
                 delete(fullfile(pathstr,[name ext]));
@@ -96,7 +120,9 @@ try
                     % easy way to distinguish whether a file has binary
                     % content in Matlab. At least not that I know of...
                     if length(data) == 1
-                        tmpData = readBinary(fullfile(pathstr,[name ext]));
+                        tmpData = readBinary(...
+                            fullfile(pathstr,[name ext]),...
+                            p.Results.precision);
                         if length(tmpData) > length(data)
                             data = tmpData;
                         end
@@ -104,7 +130,9 @@ try
                     end
                 catch exception
                     try
-                        data = readBinary(fullfile(pathstr,[name ext]));
+                        data = readBinary(...
+                            fullfile(pathstr,[name ext]),...
+                            p.Results.precision);
                     catch exception2
                         exception = addCause(exception2, exception);
                         throw(exception);
@@ -165,10 +193,10 @@ else
 end
 end
 
-function data = readBinary(filename)
+function data = readBinary(filename,precision)
 
 fh = fopen(filename);
-data = fread(fh,inf,'real*4');
+data = fread(fh,inf,precision);
 fclose(fh);
 
 end

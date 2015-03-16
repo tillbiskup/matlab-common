@@ -1,0 +1,47 @@
+function status = common_textFileWrite(filename,text)
+% COMMON_TEXTFILEWRITE Write cell array as text to file.
+%
+% Usage:
+%   status = common_textFileWrite(filename,text);
+%
+%   filename - string
+%              name of a valid (text) file to write to
+%
+%   text     - cell array
+%              text that shall get written to the file
+%
+
+% Copyright (c) 2012-15, Till Biskup
+% 2015-03-16
+
+status = '';
+
+try
+    % Parse input arguments using the inputParser functionality
+    p = inputParser;            % Create inputParser instance
+    p.FunctionName = mfilename; % Include function name in error messages
+    p.KeepUnmatched = true;     % Enable errors on unmatched arguments
+    p.StructExpand = true;      % Enable passing arguments in a structure
+    p.addRequired('filename', @ischar);
+    p.addRequired('text', @iscell);
+    p.parse(filename,text);
+catch exception
+    disp(['(EE) ' exception.message]);
+    return;
+end
+
+fid = fopen(filename,'w+');
+if fid < 0
+    status = 'Problems opening file';
+    return
+end
+
+for k=1:length(text)
+    if ischar(text{k})
+        fprintf(fid,'%s\n',text{k});
+    end
+end
+
+fclose(fid);
+
+end

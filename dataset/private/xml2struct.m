@@ -1,4 +1,4 @@
-function varargout = xml2struct(docNode)
+function varargout = XML2struct(docNode)
 % XML2STRUCT Convert XML into struct
 %
 % Usage:
@@ -6,25 +6,29 @@ function varargout = xml2struct(docNode)
 %
 %   docNode - string
 %             XML tree, org.apache.xerces.dom.DocumentImpl
+%
 %   struct  - struct
 %             content of the XML file
 %
+% SEE ALSO: struct2XML
 
-% (c) 2010, Martin Hussels
-% (c) 2010-2012, Till Biskup
-% 2012-06-08
+% Copyright (c) 2010, Martin Hussels
+% Copyright (c) 2010-2015, Till Biskup
+% 2015-03-16
 
 % Parse input arguments using the inputParser functionality
-parser = inputParser;   % Create an instance of the inputParser class.
-parser.FunctionName = mfilename; % Function name included in error messages
-parser.KeepUnmatched = true; % Enable errors on unmatched arguments
-parser.StructExpand = true; % Enable passing arguments in a structure
-parser.addRequired('docNode', @(x)isa(x,'org.apache.xerces.dom.DocumentImpl'));
-parser.parse(docNode);
+p = inputParser;            % Create inputParser instance
+p.FunctionName = mfilename; % Include function name in error messages
+p.KeepUnmatched = true;     % Enable errors on unmatched arguments
+p.StructExpand = true;      % Enable passing arguments in a structure
+p.addRequired('docNode', @(x)isa(x,'org.apache.xerces.dom.DocumentImpl'));
+p.parse(docNode);
+
 % Do the real stuff
 docRootNode=docNode.getDocumentElement;
 varname=char(docRootNode.getNodeName);
-function normalize(node) % function for removing useless empty textnodes created by the parser
+% function for removing useless empty textnodes created by the parser
+function normalize(node) 
     childnode=node.getFirstChild;
     while ~isempty(childnode)
        if strcmp(char(childnode.getNodeName),'#text')

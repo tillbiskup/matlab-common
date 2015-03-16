@@ -1,18 +1,20 @@
-function docNode = struct2xml(str)
-% XML2STRUCT Convert XML into struct
+function docNode = struct2XML(struct)
+% XML2STRUCT Convert struct into XML
 %
 % Usage:
-%   docNode = xml2struct(struct);
+%   docNode = struct2XML(struct);
 %
 %   struct  - struct
-%             content of the XML file
+%             Matlab(r) structure to be converted into XML
+%
 %   docNode - string
 %             XML tree, org.apache.xerces.dom.DocumentImpl
 %
+% SEE ALSO: XML2struct
 
-% (c) 2010, Martin Hussels
-% (c) 2010-2013, Till Biskup
-% 2013-02-15
+% Copyright (c) 2010, Martin Hussels
+% Copyright (c) 2010-2015, Till Biskup
+% 2015-03-16
 
 % Define precision of floats
 precision = 16;
@@ -59,5 +61,5 @@ function traverse(thiselement,childnode)
         childnode.setTextContent(num2str(reshape(thiselement,1,[]),precision));
     end
 end
-traverse(str,docRootNode);
+traverse(struct,docRootNode);
 end
