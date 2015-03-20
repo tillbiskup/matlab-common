@@ -10,7 +10,7 @@ function area = common_fitAreaDefine(dataset)
 %
 
 % Copyright (c) 2014, Simona Huwiler, Till Biskup
-% 2015-03-16
+% 2015-03-20
 
 B0=dataset.axes(1).values;
 spectrum = dataset.data;
@@ -59,7 +59,7 @@ end
 area = logical(area);
 
 
-%% Plotting Subfunction
+% Plotting Subfunction
     function plotArea(B0indices,spectrum,area)
         % Define area for baseline fit
         % Therefore: plot spectrum
