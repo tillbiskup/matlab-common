@@ -1,4 +1,4 @@
-function varargout = commonSave(filename,struct,varargin)
+function [status,exception] = commonSave(filename,struct,varargin)
 % COMMONSAVE Save data from the common toolbox as ZIP-compressed XML files.
 %
 % Whereas the structure of the dataset gets converted into XML, the actual
@@ -47,12 +47,25 @@ function varargout = commonSave(filename,struct,varargin)
 %     parameter "precision" has been introduced. 
 %     For details of the strings specifying the precision in Matlab(r),
 %     type "doc fwrite".
-
+%
+% For details of the concept of a dataset, see its respective website
+% (currently available only in German):
+%
+%   http://www.till-biskup.de/de/software/datensatz/index
+%
+% Details of the implementation can be found there as well:
+%
+%   http://www.till-biskup.de/de/software/datensatz/implementierung
+%   http://www.till-biskup.de/de/software/datensatz/austauschformat
 %
 % See also COMMONLOAD, FWRITE
 
 % Copyright (c) 2010-15, Till Biskup
-% 2015-03-16
+% 2015-03-22
+
+% Assign output
+status = cell(0);
+exception = [];
 
 % Parse input arguments using the inputParser functionality
 p = inputParser;            % Create inputParser instance
@@ -65,102 +78,96 @@ p.addParamValue('precision','real*8',@ischar);
 p.addParamValue('extension','.xbz',@ischar);
 p.parse(filename,struct);
 
-% Set file extensions
-zipext = p.Results.extension;
-xmlext = '.xml';
-datext = '.dat';
+% Version string
+% IMPORTANT: Change upon every change of the way data are stored
+%            For each change, an accompagnying file "loadDatasetV#" needs
+%            to be created in the "private" directory for loading this
+%            version of the dataset. See "commonLoad" for details.
+versionString = '2.0';
 
-% Set file suffixes
-dataSuffix = '-data';
-origdataSuffix = '-origdata';
+% Some more settings
+binaryDataDir = 'binaryData';
+schemaString = 'org.apache.xerces.dom.DocumentImpl';
+zipExtension = p.Results.extension;
+xmlFileName = 'struct.xml';
 
-% Set default for output arguments
-status = cell(0);
-exception = [];
+% Set field names to be saved as binary
+binaryFieldNames = {'data','origdata','calculated'};
 
 try
     [pathstr, name] = fileparts(filename);
-    dataFilename = [name dataSuffix datext];
-    origdataFilename = [name origdataSuffix datext];
-    % Extract data from struct
-    data = struct.data;
-    origdata = struct.origdata;
-    struct = rmfield(struct,'data');
-    struct = rmfield(struct,'origdata');
-    % Save data as binary
-    binaryWriteStatus = writeBinary(...
-        fullfile(tempdir,dataFilename),data,p.Results.precision);
-    if ~isempty(binaryWriteStatus)
-        status{end+1} = sprintf(...
-            'Problems writing file %s:\n   %s',...
-            dataFilename,binaryWriteStatus);
+    tmpDir = createTempDir(name);
+    
+    mkdir(fullfile(tmpDir,binaryDataDir));
+    
+    % Handle data that shall be saved as binary
+    for binaryFieldName = 1:length(binaryFieldNames)
+        if isfield(struct,binaryFieldNames{binaryFieldName})
+            tmpData = struct.(binaryFieldNames{binaryFieldName});
+            struct = rmfield(struct,binaryFieldNames{binaryFieldName});
+            binaryWriteStatus = common_binaryFileWrite(...
+                fullfile(tmpDir,binaryDataDir,...
+                binaryFieldNames{binaryFieldName}),...
+                tmpData,p.Results.precision);
+            if ~isempty(binaryWriteStatus)
+                status{end+1} = sprintf(...
+                    'Problems writing file %s:\n   %s',...
+                    binaryFileName,binaryWriteStatus); %#ok<AGROW>
+            end
+        end
     end
-    binaryWriteStatus = writeBinary(...
-        fullfile(tempdir,origdataFilename),origdata,p.Results.precision);
-    if ~isempty(binaryWriteStatus)
-        status{end+1} = sprintf(...
-            'Problems writing file %s:\n   %s',...
-            origdataFilename,binaryWriteStatus);
-    end
+    
     % Add proper extension to file name in struct
-    [structpathstr, structname] = fileparts(struct.file.name);
-    struct.file.name = fullfile(structpathstr,[structname zipext]);
+    [structpathstr, ~] = fileparts(struct.file.name);
+    struct.file.name = fullfile(structpathstr,[name zipExtension]);
+    
     % Write XML file
     docNode = struct2XML(struct);
-    xmlwrite(fullfile(tempdir,[name xmlext]),docNode);
+    xmlwrite(fullfile(tmpDir,xmlFileName),docNode);
+    
+    % Write additional files according to specification
+    common_textFileWrite(fullfile(tmpDir,'VERSION'),versionString);
+    common_textFileWrite(fullfile(tmpDir,'PRECISION'),p.Results.precision);
+    common_textFileWrite(fullfile(tmpDir,'SCHEMA'),schemaString);
+    
+    % Copy README from private directory
+    [mfiledir,~,~] = fileparts(mfilename('fullpath'));
+    copyfile(...
+        fullfile(mfiledir,'private','README.dataset'),...
+        fullfile(tmpDir,'README'));
+    
     % ZIP files
-    zip(fullfile(pathstr,[name zipext]),...
-        {fullfile(tempdir,dataFilename),...
-        fullfile(tempdir,origdataFilename),...
-        fullfile(tempdir,[name xmlext])});
-    movefile([fullfile(pathstr,[name zipext]) '.zip'],...
-        fullfile(pathstr,[name zipext]));
-    % Delete temporary files from tempdir
-    delete(fullfile(tempdir,[name xmlext]));
-    delete(fullfile(tempdir,dataFilename));
-    delete(fullfile(tempdir,origdataFilename));
+    zip(fullfile(pathstr,name),tmpDir);
+    movefile([fullfile(pathstr,name) '.zip'],...
+        fullfile(pathstr,[name zipExtension]));
+    
+    % Delete temporary directory
+    statusString = deleteTempDir(tmpDir);
+    if ~isempty(statusString)
+        status{end+1} = statusString;
+    end
 catch exception
     status{end+1} = 'A problem occurred:';
     status{end+1} = exception.message;
 end
 
-% Assign output parameters
-switch nargout
-    case 1
-        varargout{1} = status;
-    case 2
-        varargout{1} = status;
-        varargout{2} = exception;
-    otherwise
-        % Do nothing (and _not_ loop!)
 end
 
+function tmpDir = createTempDir(name)
+% CREATETEMPDIR Create temporary directory in system's temporary directory
+% and in this directory, create directory for ZIP archive given by "name".
+
+tmpDir = tempname;
+mkdir(tmpDir);
+tmpDir = fullfile(tmpDir,name);
+mkdir(tmpDir);
+
 end
 
-function status = writeBinary(filename,data,precision)
-% WRITEBINARY Writing given data to given file as binary.
-%
-% NOTE: Prior to 2015-03-16, data have been written as real*4, since then,
-%       default precision is real*8. To ensure backwards compatibility, an
-%       additional parameter "precision" has been introduced.
+function status = deleteTempDir(name)
+% DELETETEMPDIR Delete temporary directory in system's temporary directory.
 
-% Set status
-status = '';
-
-% Open file for (only) writing
-fh = fopen(filename,'w');
-
-% Write data
-count = fwrite(fh,data,precision);
-
-% Close file
-fclose(fh);
-
-% Check whether all elements have been written
-[y,x] = size(data);
-if count ~= x*y
-    status = sprintf('Problems with writing: %i of %i elements written',...
-        count,x*y);
-end
+[temporaryDirectory,~] = fileparts(name);
+[~,status,~] = rmdir(temporaryDirectory,'s');
 
 end

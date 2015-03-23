@@ -1,5 +1,5 @@
-function varargout = commonLoad(filename,varargin)
-% COMMONLOAD Read ZIP-compressed XML file and data (if available)
+function [data,warning] = commonLoad(filename,varargin)
+% COMMONLOAD Read ZIP-compressed XML file and data (if available).
 %
 % Usage:
 %   [data,warning] = commonLoad(filename)
@@ -23,7 +23,7 @@ function varargout = commonLoad(filename,varargin)
 %
 %                precision - string
 %                            Precision of the binary data written as binary
-%                            file. 
+%                            file.
 %                            Default: real*8 (*)
 %
 %                extension - string
@@ -31,10 +31,40 @@ function varargout = commonLoad(filename,varargin)
 %                            gets saved to.
 %                            Default: .xbz
 %
+% For details of the concept of a dataset, see its respective website
+% (currently available only in German):
+%
+%   http://www.till-biskup.de/de/software/datensatz/index
+%
+% Details of the implementation can be found there as well:
+%
+%   http://www.till-biskup.de/de/software/datensatz/implementierung
+%   http://www.till-biskup.de/de/software/datensatz/austauschformat
+%
+% Compatibility:
+%
+% This function aims at full compatibility with datasets saved with
+% versions of the trEPR and TA toolboxes prior to introducing the
+% implementation scheme described at the website referred to above. Loading
+% datasets in previous formats should therefore never be a problem, as long
+% as the toolboxes get developed...
+%
 % SEE ALSO commonSave
 
 % Copyright (c) 2011-15, Till Biskup
-% 2015-03-16
+% 2015-03-23
+
+% NOTE FOR DEVELOPERS:
+% For each version of the dataset storage format, an accompagnying file
+% "loadDatasetV#" needs to be created in the "private" directory handling
+% the respective version of the dataset storage format.
+%
+% The version string is set in the "commonSave" routine. See there for
+% details.
+
+% Assign default output
+data = logical(false);
+warning = cell(0);
 
 % Parse input arguments using the inputParser functionality
 p = inputParser;            % Create inputParser instance
@@ -48,155 +78,76 @@ p.addParamValue('extension','.xbz',@ischar);
 p.addParamValue('checkFormat',logical(true),@islogical);
 p.parse(filename);
 
-%% TODO
-% - Add handling of "origdata" files
-% - Automatic appending of extension and check for existence of that...
-
-warning = cell(0);
-
-% Do the real stuff
+% Handle multiple filenames in cell array
 if iscell(filename)
     data = cell(length(filename),1);
     warning = cell(length(filename),1);
     for k=1:length(filename)
-        [data{k},warning{k}] = xmlZipRead(filename{k},varargin{:});
+        [data{k},warning{k}] = commonLoad(filename{k},varargin{:});
     end
-    varargout{1} = data;
-    varargout{2} = warning;
     return;
 end
 
+% Does the file exist?
 if ~exist(filename,'file')
-    fprintf('"%s" seems not to be a valid filename. Abort.',filename);
-    if nargout, varargout{1} = logical(false); end;
-    return;
+    % Try to set proper extension
+    [tmpPath,tmpName,~] = fileparts(filename);
+    filename = fullfile(tmpPath,[tmpName p.Results.extension]);
+    % If it still doesn't exist, throw error and exit
+    if ~exist(filename,'file')
+        warning{end+1} = sprintf(...
+            '"%s" seems not to be a valid filename. Abort.',filename);
+        return;
+    end
 end
-[status,message,messageid] = copyfile(filename,tempdir);
-if ~status
-    fprintf('%s\n%s\n Aborted.\n',messageid,message);
-    if nargout, varargout{1} = logical(false); end;
-    return;
-end
-PWD = pwd;
-cd(tempdir);
-% Unzip and delete ZIP archive afterwards
+
+tmpDir = createTempDir();
+
+% Unzip archive
 try
-    filenames = unzip(filename);
-    [~, name, ext] = fileparts(filename);
-    delete(fullfile(tempdir,[name ext]));
+    archiveFilenames = unzip(filename,tmpDir);
 catch exception
-    warning = sprintf('%s\n%s\n"%s"\n%s\n',...
+    warning{end+1} = sprintf('%s\n%s\n"%s"\n%s\n',...
         exception.identifier,...
         'Problems with unzipping:',...
         filename,...
         'seems not to be a valid zip file. Aborted.');
-    if nargout
-        varargout{1} = logical(false);
-        varargout{2} = warning;
-    end
     return;
 end
-% Read different files of the archive
-try
-    for k=1:length(filenames)
-        [pathstr, name, ext] = fileparts(filenames{k});
-        switch ext
-            case '.xml'
-                XMLfileSerialize(fullfile(pathstr,[name ext]));
-                DOMnode = xmlread(fullfile(pathstr,[name ext]));
-                struct = xml2struct(DOMnode);
-                delete(fullfile(pathstr,[name ext]));
-            case '.dat'
-                try
-                    data = load(fullfile(pathstr,[name ext]));
-                    % Try to check whether we have read correct data - as
-                    % we cannot rely to already have read the xml file, we
-                    % need to check whether "length(data) == 1" and in this
-                    % case try to read via binary and see what happens.
-                    %
-                    % This is to cope with the fact that some binary files
-                    % might start with something load interprets as proper
-                    % number - and therefore doesn't crash. There is no
-                    % easy way to distinguish whether a file has binary
-                    % content in Matlab. At least not that I know of...
-                    if length(data) == 1
-                        tmpData = readBinary(...
-                            fullfile(pathstr,[name ext]),...
-                            p.Results.precision);
-                        if length(tmpData) > length(data)
-                            data = tmpData;
-                        end
-                        clear tmpData;
-                    end
-                catch exception
-                    try
-                        data = readBinary(...
-                            fullfile(pathstr,[name ext]),...
-                            p.Results.precision);
-                    catch exception2
-                        exception = addCause(exception2, exception);
-                        throw(exception);
-                    end
-                end
-                delete(fullfile(pathstr,[name ext]));
-            otherwise
-                delete(fullfile(pathstr,[name ext]));
-        end
-    end
-catch errmsg
-    warning{end+1}.identifier = 'xmlZipRead:xmlParser';
-    warning{end}.message = sprintf('%s\n%s\n"%s"\n',...
-        errmsg.identifier,...
-        'Problems with parsing XML in file:',...
-        filename);
-    if nargout
-        varargout{1} = logical(false);
-        varargout{2} = warning;
-    end
-    cd(PWD);
-    return;
-end
-if exist('data','var')
-    % Check whether data have the right dimensions - in case that we read
-    % from binary, most probably they have not - in this case, reshape
-    xdim = length(struct.axes.x.values);
-    ydim = length(struct.axes.y.values);
-    [y,x] = size(data);
-    if ((x ~= xdim) || (y ~= ydim))  && ~isempty(data)
-        try
-            data = reshape(data,ydim,xdim);
-        catch exception
-            errmsg = sprintf('%s\n%s\n\nError was: %s',...
-                'Something caused trouble trying to reshape...',...
-                'Therefore, data might be corrupted. BE CAREFUL!',...
-                getReport(exception, 'extended', 'hyperlinks', 'off'));
-            warning{end+1}.identifier = 'xmlZipRead:reshape';
-            warning{end}.message = errmsg;
-        end
-    end
-    struct.data = data;
-    clear data
-end
-cd(PWD);
-% Convert to current toolbox format if necessary
-[struct,convertWarning] = fileFormatConvert(struct);
-if ~isempty(convertWarning)
-    warning{end+1}.identifier = 'Problems with converting to current toolbox data structure';
-    warning{end}.message = convertWarning;
-end
-if nargout
-    varargout{1} = struct;
-    varargout{2} = warning;
+
+if all(cellfun(@isempty,strfind(archiveFilenames,'VERSION')))
+    [data,warning] = loadDatasetV1(archiveFilenames);
 else
-    varname=char(DOMnode.getDocumentElement.getNodeName);
-    assignin('caller',varname,struct);
-end
+    % Read VERSION file and create function name for loading dataset using
+    % the form "loadDatasetV#" - where "." is replaced by "_" in version
+    % string.
+    versionString = char(strrep(common_textFileRead(...
+        archiveFilenames{...
+        not(cellfun(@isempty,strfind(archiveFilenames,'VERSION')))}),...
+        '.','_'));
+    loadFunction = str2func(['loadDatasetV' versionString]);
+    [data,warning] = loadFunction(archiveFilenames);
 end
 
-function data = readBinary(filename,precision)
+% Delete temporary directory
+statusString = deleteTempDir(tmpDir);
+if ~isempty(statusString)
+    warning{end+1} = statusString;
+end
 
-fh = fopen(filename);
-data = fread(fh,inf,precision);
-fclose(fh);
+end
+
+function tmpDir = createTempDir()
+% CREATETEMPDIR Create temporary directory in system's temporary directory.
+
+tmpDir = tempname;
+mkdir(tmpDir);
+
+end
+
+function status = deleteTempDir(temporaryDirectory)
+% DELETETEMPDIR Delete temporary directory in system's temporary directory.
+
+[~,status,~] = rmdir(temporaryDirectory,'s');
 
 end

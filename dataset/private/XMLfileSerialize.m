@@ -6,7 +6,7 @@ function XMLfileSerialize(filename)
 %   XMLfileSerialize(filename)
 
 % Copyright (c) 2010-2015, Till Biskup
-% 2015-03-16
+% 2015-03-20
 
 % Parse input arguments using the inputParser functionality
 p = inputParser;            % Create inputParser instance

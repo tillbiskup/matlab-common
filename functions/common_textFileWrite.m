@@ -12,7 +12,7 @@ function status = common_textFileWrite(filename,text)
 %
 
 % Copyright (c) 2012-15, Till Biskup
-% 2015-03-16
+% 2015-03-22
 
 status = '';
 
@@ -23,7 +23,7 @@ try
     p.KeepUnmatched = true;     % Enable errors on unmatched arguments
     p.StructExpand = true;      % Enable passing arguments in a structure
     p.addRequired('filename', @ischar);
-    p.addRequired('text', @iscell);
+    p.addRequired('text', @(x)iscell(x) || ischar(x));
     p.parse(filename,text);
 catch exception
     disp(['(EE) ' exception.message]);
@@ -36,11 +36,16 @@ if fid < 0
     return
 end
 
-for k=1:length(text)
-    if ischar(text{k})
-        fprintf(fid,'%s\n',text{k});
+if iscell(text)
+    for k=1:length(text)
+        if ischar(text{k})
+            fprintf(fid,'%s\n',text{k});
+        end
     end
+else
+    fprintf(fid,'%s\n',text);
 end
+
 
 fclose(fid);
 

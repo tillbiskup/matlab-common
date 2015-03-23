@@ -14,7 +14,7 @@ function text = common_textFileRead(filename,varargin)
 % See also: fileread, common_textFileWrite
 
 % Copyright (c) 2011-15, Till Biskup
-% 2015-03-16
+% 2015-03-22
 
 text = cell(0);
 
@@ -33,6 +33,11 @@ catch exception
 end
 
 text = regexp(fileread(filename),'\n','split');
+
+% Remove last element if empty
+if isempty(text{end})
+    text(end) = [];
+end
 
 if p.Results.LineNumbers
     lineNumbers = cellstr(num2str((1:length(text))'));
