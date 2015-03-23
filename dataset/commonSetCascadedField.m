@@ -25,9 +25,9 @@ function struct = commonSetCascadedField(struct, fieldName, value, varargin)
 %
 % SEE ALSO: commonGetCascadedField
 
-% Copyright (c) 2011-14, Till Biskup
+% Copyright (c) 2011-15, Till Biskup
 % Copyright (c) 2011-13, Bernd Paulus
-% 2014-04-11
+% 2015-03-23
 
 try
     % Get number of "." in fieldName
@@ -77,6 +77,10 @@ try
         end
         % Get content of the next field
         if currentIsCell
+            % If the field is empty, allocate as cell
+            if isempty(struct.(fieldName(1:nDots(1)-1)))
+                struct.(fieldName(1:nDots(1)-1)) = cell(1);
+            end
             innerstruct = struct.(fieldName(1:nDots(1)-1)){cellind};
         else
             innerstruct = struct.(fieldName(1:nDots(1)-1));

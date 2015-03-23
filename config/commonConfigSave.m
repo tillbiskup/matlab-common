@@ -1,5 +1,6 @@
-function [ warnings ] = commonConfigSave ( fileName, data, varargin )
-% COMMONCONFIGSAVE Save a MATLAB(r) structure to a Windows-style ini file.
+function [warnings] = commonConfigSave (fileName,data,varargin)
+% COMMONCONFIGSAVE Save a MATLAB(r) structure to a config file in style of
+% a Windows INI file. 
 %
 % Usage
 %   commonConfigSave(filename,data)
@@ -7,11 +8,11 @@ function [ warnings ] = commonConfigSave ( fileName, data, varargin )
 %   commonConfigSave(filename,data,'<parameter>','<option>')
 %
 %   filename - string
-%              Name of the ini file to write
+%              Name of the config file to write
 %
 %   data     - struct
 %              MATLAB(r) struct structure containing the contents to be
-%              written to the ini file
+%              written to the config file
 %
 %   warnings - string/cell array of strings
 %              Contains further information if something went wrong.
@@ -40,39 +41,37 @@ function [ warnings ] = commonConfigSave ( fileName, data, varargin )
 %                         Character used for the assigning values to keys
 %                         Default: =
 %
+%   precision           - scalar
+%                         Precision used to save numeric parameters to
+%                         config file.
+%                         Default: 16
+%
 % See also: commonConfigLoad 
 
-% (c) 2008-14, Till Biskup
-% (c) 2013, Bernd Paulus
-% 2014-04-09
+% Copyright (c) 2008-15, Till Biskup
+% Copyright (c) 2013, Bernd Paulus
+% 2015-03-23
 
 % Parse input arguments using the inputParser functionality
-p = inputParser;            % Create an instance of the inputParser class.
-p.FunctionName = mfilename; % Function name to be included in error messages
+p = inputParser;            % Create inputParser instance.
+p.FunctionName = mfilename; % Include function name in error messages
 p.KeepUnmatched = true;     % Enable errors on unmatched arguments
 p.StructExpand = true;      % Enable passing arguments in a structure
-% Add required input arguments
 p.addRequired('fileName', @(x)ischar(x));
 p.addRequired('data', @(x)isstruct(x));
-% Add a few optional parameters, with default values
 p.addParamValue('header',cell(0),@(x) ischar(x) || iscell(x));
 p.addParamValue('commentChar','%',@ischar);
 p.addParamValue('assignmentChar',' =',@ischar);
 p.addParamValue('overwrite',false,@islogical);
 p.addParamValue('addModificationDate',true,@islogical);
-% Parse input arguments
+p.addParamValue('precision',16,@isscalar);
 p.parse(fileName,data,varargin{:});
 
 % Assign parameters from parser
 header = p.Results.header;
 commentChar = p.Results.commentChar;
 assignmentChar = p.Results.assignmentChar;
-
-% headerFirstLine
-% headerCreationDate
-
-% Set precision for floats
-precision = 16;
+precision = p.Results.precision;
 
 warnings = '';
 
@@ -81,7 +80,7 @@ if isempty(fileName)
     return;
 end
 
-% check whether the output file already exists
+% Check whether the output file already exists
 if exist(fileName,'file') && ~p.Results.overwrite 
     warnings = 'File exists';
     return;
