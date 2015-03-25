@@ -61,7 +61,7 @@ function [status,exception] = commonSave(filename,struct,varargin)
 % See also COMMONLOAD, FWRITE
 
 % Copyright (c) 2010-15, Till Biskup
-% 2015-03-22
+% 2015-03-25
 
 % Assign output
 status = cell(0);
@@ -114,6 +114,11 @@ try
                     'Problems writing file %s:\n   %s',...
                     binaryFileName,binaryWriteStatus); %#ok<AGROW>
             end
+            % Save dimensions for each binary file as well
+            common_textFileWrite(...
+                fullfile(tmpDir,binaryDataDir,...
+                [binaryFieldNames{binaryFieldName} '.dim']),...
+                num2str(size(tmpData)));
         end
     end
     

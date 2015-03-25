@@ -19,7 +19,7 @@ function [dataStructure,warning] = loadDatasetV2_0(archiveFilenames)
 % SEE ALSO commonLoad
 
 % Copyright (c) 2015, Till Biskup
-% 2015-03-23
+% 2015-03-25
 
 dataStructure = [];
 warning = cell(0);
@@ -43,11 +43,19 @@ try
     for binaryFieldName = 1:length(binaryFieldNames)
         if exist(fullfile(archiveDirectory,binaryDataDir,...
                 binaryFieldNames{binaryFieldName}),'file')
+            % Load binary
             dataStructure.(binaryFieldNames{binaryFieldName}) = ...
                 common_binaryFileRead(...
                 fullfile(archiveDirectory,binaryDataDir,...
                 binaryFieldNames{binaryFieldName}),...
                 precision);
+            % Load dimension
+            dimension = load(fullfile(archiveDirectory,binaryDataDir,...
+                [binaryFieldNames{binaryFieldName} '.dim']));
+            % Reshape binary fields
+            dataStructure.(binaryFieldNames{binaryFieldName}) = reshape(...
+                dataStructure.(binaryFieldNames{binaryFieldName}),...
+                dimension);
         end
     end
 catch exception

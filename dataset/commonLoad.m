@@ -88,8 +88,8 @@ if iscell(filename)
     return;
 end
 
-% Does the file exist?
-if ~exist(filename,'file')
+% Does the file exist - and is it a file (not a directory)?
+if exist(filename,'file') ~= 2
     % Try to set proper extension
     [tmpPath,tmpName,~] = fileparts(filename);
     filename = fullfile(tmpPath,[tmpName p.Results.extension]);
