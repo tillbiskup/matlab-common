@@ -1,38 +1,52 @@
-function metaData = commonInfofileLoad(filename)
+function [metaData,format] = commonInfofileLoad(filename)
 % COMMONINFOFILELOAD Load and parse info file and return contents as
 % hierarchical struct using camelCased block and field names. 
 %
 % Usage
 %   metaData = commonInfofileLoad(filename);
+%   [metaData,identifierString] = commonInfofileLoad(filename);
 %
 %   filename - string
 %              Name of info file to read
 %              Extension is always assumed to be .info
 %
 %   metaData - struct
-%              Hierarchical structure containing metadata from info file
+%              Hierarchical structure containing metadata from info file 
+%
+%   format   - struct
+%              Information from first line of info file used to identify
+%              type and version (with date).
+%              Fields are: type, version, date
+%              See specification (link below) for details.
 %
 % For a description of the specification of the info file format, see
 %   http://www.till-biskup.de/en/software/info/
 
 % Copyright (c) 2014-15, Till Biskup
-% 2015-03-06
+% 2015-03-25
 
 metaData = struct();
 
-% Parse input arguments using the inputParser functionality.
-p = inputParser;             % Create an instance of the inputParser class.
-p.FunctionName  = mfilename; % Include function name in error messages.
-p.KeepUnmatched = true;      % Enable errors on unmatched arguments.
-p.StructExpand  = true;      % Enable passing arguments in a structure.
-p.addRequired('filename',@(x)ischar(x));
-p.parse(filename);
+try
+    % Parse input arguments using the inputParser functionality.
+    p = inputParser;             % Create inputParser instance.
+    p.FunctionName  = mfilename; % Include function name in error messages.
+    p.KeepUnmatched = true;      % Enable errors on unmatched arguments.
+    p.StructExpand  = true;      % Enable passing arguments in a structure.
+    p.addRequired('filename',@(x)ischar(x));
+    p.parse(filename);
+catch exception
+    disp(['(EE) ' exception.message]);
+    return;
+end
 
 infoFileContents = loadInfoFile(filename);
 if isempty(infoFileContents)
     fprintf('Problems reading info file "%s".\n',filename);
     return;
 end
+
+format = getInfoFileFormat(infoFileContents{1});
 
 infoFileContents = removeCommentLines(infoFileContents);
 
@@ -86,6 +100,18 @@ end
 
 end
 
+function format = getInfoFileFormat(identifierString)
+% GETINFOFILEFORMAT Return info read from first line of info file
+% containing type, version and release date of version
+%   format - struct
+
+format.type = strtrim(identifierString(1:strfind(identifierString,'-')-1));
+format.version = strtrim(char(...
+    regexp(identifierString,'(?<=v.).*(?=\(\d{4}-\d{2}-\d{2})','match')));
+format.date = identifierString(strfind(identifierString,'(')+1:end-1);
+
+end
+
 function infoFileContents = removeCommentLines(infoFileContents)
 % REMOVECOMMENTLINES Remove lines starting with comment character
 %   infoFileContents - cell array
@@ -132,6 +158,11 @@ function sanitisedFieldName = sanitiseFieldName(fieldName)
 
 % Convert to lower case
 sanitisedFieldName = lower(fieldName);
+% If there is a percent sign (aka comment), cut comment
+if strfind(sanitisedFieldName,'%')
+    sanitisedFieldName = strtrim(...
+        sanitisedFieldName(1:strfind(sanitisedFieldName,'%')-1));
+end
 % If there are spaces in the field name, camelCase and remove spaces
 if find(isspace(sanitisedFieldName))
     sanitisedFieldName(find(isspace(sanitisedFieldName))+1) = ...
@@ -161,7 +192,8 @@ for blockLine = 1:length(infoFileBlock)
             parsedBlock.(sanitiseFieldName(strtrim(blockLineParts{1}))) = ...
                 strtrim(blockLineParts{2});
         else
-            warning('Problems parsing info file. Probably missing ":"');
+            warning(sprintf('%s:MissingColon',mfilename),...
+                'Problems parsing info file. Probably missing ":"');
         end
     end
 end
