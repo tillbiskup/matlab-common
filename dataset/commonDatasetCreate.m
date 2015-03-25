@@ -29,7 +29,7 @@ function dataset = commonDatasetCreate(varargin)
 % SEE ALSO: commonHistoryCreate
 
 % Copyright (c) 2014-15, Till Biskup
-% 2015-03-05
+% 2015-03-24
 
 % Assign output parameter
 dataset = struct();
@@ -46,7 +46,7 @@ p.addParamValue('hasOptionalFields',false,@islogical);
 p.parse(varargin{:});
 
 % Define version of dataset structure
-structureVersion = '0.2';
+structureVersion = '0.3';
 
 dataset.data = [];
 dataset.origdata = [];
@@ -83,10 +83,14 @@ if p.Results.hasOptionalFields
                 )...
             )...
         );
+    for axis = 1:p.Results.numberOfAxes
+        dataset.axes.calculated(axis) = axisStructureCreate;
+    end
 end
 
 for axis = 1:p.Results.numberOfAxes
-    dataset.axes(axis) = axisStructureCreate;
+    dataset.axes.data(axis) = axisStructureCreate;
+    dataset.axes.origdata(axis) = axisStructureCreate;
 end
 
 dataset.parameters = struct(...
