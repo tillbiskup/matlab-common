@@ -40,7 +40,7 @@ function [data,warnings] = commonConfigLoad(fileName,varargin)
 
 % Copyright (c) 2008-15, Till Biskup
 % Copyright (c) 2013, Bernd Paulus
-% 2015-03-23
+% 2015-03-25
 
 % TODO
 %	* Change handling of whitespace characters (subfunctions) thus that it
@@ -50,17 +50,22 @@ function [data,warnings] = commonConfigLoad(fileName,varargin)
 data = struct();
 warnings = cell(0);
 
-% Parse input arguments using the inputParser functionality
-p = inputParser;            % Create inputParser instance.
-p.FunctionName = mfilename; % Include function name in error messages
-p.KeepUnmatched = true;     % Enable errors on unmatched arguments
-p.StructExpand = true;      % Enable passing arguments in a structure
-p.addRequired('fileName', @(x)ischar(x));
-p.addParamValue('commentChar','%',@ischar);
-p.addParamValue('assignmentChar','=',@ischar);
-p.addParamValue('blockStartChar','[',@ischar);
-p.addParamValue('typeConversion',false,@islogical);
-p.parse(fileName,varargin{:});
+try
+    % Parse input arguments using the inputParser functionality
+    p = inputParser;            % Create inputParser instance.
+    p.FunctionName = mfilename; % Include function name in error messages
+    p.KeepUnmatched = true;     % Enable errors on unmatched arguments
+    p.StructExpand = true;      % Enable passing arguments in a structure
+    p.addRequired('fileName', @(x)ischar(x));
+    p.addParamValue('commentChar','%',@ischar);
+    p.addParamValue('assignmentChar','=',@ischar);
+    p.addParamValue('blockStartChar','[',@ischar);
+    p.addParamValue('typeConversion',false,@islogical);
+    p.parse(fileName,varargin{:});
+catch exception
+    disp(['(EE) ' exception.message]);
+    return;
+end
 
 % Assign parameters from parser
 commentChar = p.Results.commentChar;
@@ -78,7 +83,7 @@ if ~exist(fileName,'file')
     return;
 end
 
-configFileContents = common_textFileRead(fileName);
+configFileContents = commonTextFileRead(fileName);
 
 % read parameters to structure
 blockname = '';

@@ -6,7 +6,7 @@ function XMLfileSerialize(filename)
 %   XMLfileSerialize(filename)
 
 % Copyright (c) 2010-2015, Till Biskup
-% 2015-03-20
+% 2015-03-25
 
 % Parse input arguments using the inputParser functionality
 p = inputParser;            % Create inputParser instance
@@ -21,7 +21,7 @@ if ~exist(filename,'file')
     fprintf('"%s" seems not to be a valid filename. Abort.',filename);
     return;
 end
-txt = common_textFileRead(filename);
+txt = commonTextFileRead(filename);
 fid2 = fopen(filename,'wt');
 for k=1:length(txt)
     fprintf(fid2,'%s',strtrim(txt{k}));

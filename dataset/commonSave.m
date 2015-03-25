@@ -67,16 +67,21 @@ function [status,exception] = commonSave(filename,struct,varargin)
 status = cell(0);
 exception = [];
 
-% Parse input arguments using the inputParser functionality
-p = inputParser;            % Create inputParser instance
-p.FunctionName = mfilename; % Include function name in error messages
-p.KeepUnmatched = true;     % Enable errors on unmatched arguments
-p.StructExpand = true;      % Enable passing arguments in a structure
-p.addRequired('filename', @ischar);
-p.addRequired('struct', @isstruct);
-p.addParamValue('precision','real*8',@ischar);
-p.addParamValue('extension','.xbz',@ischar);
-p.parse(filename,struct);
+try
+    % Parse input arguments using the inputParser functionality
+    p = inputParser;            % Create inputParser instance
+    p.FunctionName = mfilename; % Include function name in error messages
+    p.KeepUnmatched = true;     % Enable errors on unmatched arguments
+    p.StructExpand = true;      % Enable passing arguments in a structure
+    p.addRequired('filename', @ischar);
+    p.addRequired('struct', @isstruct);
+    p.addParamValue('precision','real*8',@ischar);
+    p.addParamValue('extension','.xbz',@ischar);
+    p.parse(filename,struct);
+catch exception
+    disp(['(EE) ' exception.message]);
+    return;
+end
 
 % Version string
 % IMPORTANT: Change upon every change of the way data are stored
@@ -105,7 +110,7 @@ try
         if isfield(struct,binaryFieldNames{binaryFieldName})
             tmpData = struct.(binaryFieldNames{binaryFieldName});
             struct = rmfield(struct,binaryFieldNames{binaryFieldName});
-            binaryWriteStatus = common_binaryFileWrite(...
+            binaryWriteStatus = commonBinaryFileWrite(...
                 fullfile(tmpDir,binaryDataDir,...
                 binaryFieldNames{binaryFieldName}),...
                 tmpData,p.Results.precision);
@@ -115,7 +120,7 @@ try
                     binaryFileName,binaryWriteStatus); %#ok<AGROW>
             end
             % Save dimensions for each binary file as well
-            common_textFileWrite(...
+            commonTextFileWrite(...
                 fullfile(tmpDir,binaryDataDir,...
                 [binaryFieldNames{binaryFieldName} '.dim']),...
                 num2str(size(tmpData)));
@@ -131,9 +136,9 @@ try
     xmlwrite(fullfile(tmpDir,xmlFileName),docNode);
     
     % Write additional files according to specification
-    common_textFileWrite(fullfile(tmpDir,'VERSION'),versionString);
-    common_textFileWrite(fullfile(tmpDir,'PRECISION'),p.Results.precision);
-    common_textFileWrite(fullfile(tmpDir,'SCHEMA'),schemaString);
+    commonTextFileWrite(fullfile(tmpDir,'VERSION'),versionString);
+    commonTextFileWrite(fullfile(tmpDir,'PRECISION'),p.Results.precision);
+    commonTextFileWrite(fullfile(tmpDir,'SCHEMA'),schemaString);
     
     % Copy README from private directory
     [mfiledir,~,~] = fileparts(mfilename('fullpath'));

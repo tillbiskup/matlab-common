@@ -27,7 +27,7 @@ function [dataStructure,warning] = loadDatasetV1(archiveFilenames)
 % SEE ALSO commonLoad
 
 % Copyright (c) 2015, Till Biskup
-% 2015-03-23
+% 2015-03-25
 
 dataStructure = [];
 warning = cell(0);
@@ -55,7 +55,7 @@ try
                     % easy way to distinguish whether a file has binary
                     % content in Matlab. At least not that I know of...
                     if length(data) == 1
-                        tmpData = common_binaryFileRead(...
+                        tmpData = commonBinaryFileRead(...
                             fullfile(pathstr,[name ext]),...
                             'real*4');
                         if length(tmpData) > length(data)
@@ -65,7 +65,7 @@ try
                     end
                 catch exception
                     try
-                        data = common_binaryFileRead(...
+                        data = commonBinaryFileRead(...
                             fullfile(pathstr,[name ext]),...
                             'real*4');
                     catch exception2

@@ -1,9 +1,9 @@
-function text = common_textFileRead(filename,varargin)
-% COMMON_TEXTFILEREAD Read text file and return all lines as cell array. 
+function text = commonTextFileRead(filename,varargin)
+% COMMONTEXTFILEREAD Read text file and return all lines as cell array. 
 % The line ends will not be conserved (use of fgetl internally). 
 %
 % Usage:
-%   text = common_textFileRead(filename);
+%   text = commonTextFileRead(filename);
 %
 %   filename - string
 %              name of a valid (text) file to read
@@ -11,10 +11,11 @@ function text = common_textFileRead(filename,varargin)
 %   text     - cell array
 %              contains all lines of the textfile
 %
-% See also: fileread, common_textFileWrite
+% See also: fileread, commonTextFileWrite, commonBinaryFileRead,
+% commonBinaryFileWrite
 
 % Copyright (c) 2011-15, Till Biskup
-% 2015-03-22
+% 2015-03-25
 
 text = cell(0);
 

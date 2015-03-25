@@ -1,9 +1,9 @@
-function status = common_binaryFileWrite(filename,data,varargin)
-% COMMON_BINARYFILEWRITE Write data to file as binary.
+function status = commonBinaryFileWrite(filename,data,varargin)
+% COMMONBINARYFILEWRITE Write data to file as binary.
 %
 % Usage:
-%   status = common_binaryFileWrite(filename,data)
-%   status = common_binaryFileWrite(filename,data,precision)
+%   status = commonBinaryFileWrite(filename,data)
+%   status = commonBinaryFileWrite(filename,data,precision)
 %
 %   filename  - string
 %               name of a valid (text) file to write to
@@ -15,11 +15,11 @@ function status = common_binaryFileWrite(filename,data,varargin)
 %               Precision used for writing binary data
 %               Default: 'real*8'
 %               
-% See also: fwrite, common_binaryFileRead, common_textFileRead,
-% common_textFileWrite
+% See also: fwrite, commonBinaryFileRead, commonTextFileRead,
+% commonTextFileWrite
 
 % Copyright (c) 2015, Till Biskup
-% 2015-03-22
+% 2015-03-25
 
 status = '';
 

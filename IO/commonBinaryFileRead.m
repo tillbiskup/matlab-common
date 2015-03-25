@@ -1,9 +1,9 @@
-function [data,status] = common_binaryFileRead(filename,varargin)
-% COMMON_BINARYFILEREAD Read binary file and return numeric data. 
+function [data,status] = commonBinaryFileRead(filename,varargin)
+% COMMONBINARYFILEREAD Read binary file and return numeric data. 
 %
 % Usage:
-%   data = common_binaryFileRead(filename);
-%   data = common_binaryFileRead(filename,precision);
+%   data = commonBinaryFileRead(filename);
+%   data = commonBinaryFileRead(filename,precision);
 %
 %   filename  - string
 %               name of a valid (binary) file to read
@@ -15,10 +15,11 @@ function [data,status] = common_binaryFileRead(filename,varargin)
 %               Precision used for writing binary data
 %               Default: 'real*8'
 %
-% See also: fileread, common_binaryFileWrite
+% See also: fileread, commonBinaryFileWrite, commonTextFileRead,
+% commonTextFileWrite
 
 % Copyright (c) 2015, Till Biskup
-% 2015-03-22
+% 2015-03-25
 
 data = [];
 status = '';

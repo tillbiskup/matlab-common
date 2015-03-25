@@ -1,8 +1,8 @@
-function status = common_textFileWrite(filename,text)
-% COMMON_TEXTFILEWRITE Write cell array as text to file.
+function status = commonTextFileWrite(filename,text)
+% COMMONTEXTFILEWRITE Write cell array as text to file.
 %
 % Usage:
-%   status = common_textFileWrite(filename,text);
+%   status = commonTextFileWrite(filename,text);
 %
 %   filename - string
 %              name of a valid (text) file to write to
@@ -10,9 +10,10 @@ function status = common_textFileWrite(filename,text)
 %   text     - cell array
 %              text that shall get written to the file
 %
+% See also: commonTextFileRead, commonBinaryFileWrite, commonBinaryFileRead
 
 % Copyright (c) 2012-15, Till Biskup
-% 2015-03-22
+% 2015-03-25
 
 status = '';
 

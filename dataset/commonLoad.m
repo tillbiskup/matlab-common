@@ -52,7 +52,7 @@ function [data,warning] = commonLoad(filename,varargin)
 % SEE ALSO commonSave
 
 % Copyright (c) 2011-15, Till Biskup
-% 2015-03-23
+% 2015-03-25
 
 % NOTE FOR DEVELOPERS:
 % For each version of the dataset storage format, an accompagnying file
@@ -66,17 +66,23 @@ function [data,warning] = commonLoad(filename,varargin)
 data = logical(false);
 warning = cell(0);
 
-% Parse input arguments using the inputParser functionality
-p = inputParser;            % Create inputParser instance
-p.FunctionName = mfilename; % Include function name in error messages
-p.KeepUnmatched = true;     % Enable errors on unmatched arguments
-p.StructExpand = true;      % Enable passing arguments in a structure
-p.addRequired('filename', @(x)ischar(x) || iscell(x));
-p.addParamValue('precision','real*8',@ischar);
-p.addParamValue('extension','.xbz',@ischar);
-% Note, this is to be compatible with TAload - currently without function!
-p.addParamValue('checkFormat',logical(true),@islogical);
-p.parse(filename);
+try
+    % Parse input arguments using the inputParser functionality
+    p = inputParser;            % Create inputParser instance.
+    p.FunctionName = mfilename; % Include function name in error messages
+    p.KeepUnmatched = true;     % Enable errors on unmatched arguments
+    p.StructExpand = true;      % Enable passing arguments in a structure
+    p.addRequired('filename', @(x)ischar(x) || iscell(x));
+    p.addParamValue('precision','real*8',@ischar);
+    p.addParamValue('extension','.xbz',@ischar);
+    % Note, this is to be compatible with TAload - currently without function!
+    p.addParamValue('checkFormat',logical(true),@islogical);
+    p.parse(filename);
+catch exception
+    disp(['(EE) ' exception.message]);
+    return;
+end
+
 
 % Handle multiple filenames in cell array
 if iscell(filename)
@@ -121,7 +127,7 @@ else
     % Read VERSION file and create function name for loading dataset using
     % the form "loadDatasetV#" - where "." is replaced by "_" in version
     % string.
-    versionString = char(strrep(common_textFileRead(...
+    versionString = char(strrep(commonTextFileRead(...
         archiveFilenames{...
         not(cellfun(@isempty,strfind(archiveFilenames,'VERSION')))}),...
         '.','_'));
