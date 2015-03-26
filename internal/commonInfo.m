@@ -83,8 +83,8 @@ function varargout = commonInfo(varargin)
 %
 % SEE ALSO ver, version
 
-% (c) 2007-14, Till Biskup
-% (c) 2014, Deborah Meyer
+% Copyright (c) 2007-14, Till Biskup
+% Copyright (c) 2014, Deborah Meyer
 % 2014-04-11
 
 % The place to centrally manage the revision number and date is the file

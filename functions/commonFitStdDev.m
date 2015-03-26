@@ -29,7 +29,7 @@ function stdDev = commonFitStdDev(jacobian,variance)
 %   retrieved, 2014-04-29
 %
 
-% (c) 2014, Bernd Paulus
+% Copyright (c) 2014, Bernd Paulus
 % 2014-05-02
 
 % perform QR factorization on J

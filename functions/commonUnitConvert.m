@@ -36,7 +36,7 @@ function [output,warnings] = commonUnitConvert(data,unit,varargin)
 %   'T'     - Tesla - magnetic field
 %
 
-% (c) 2014, Bernd Paulus
+% Copyright (c) 2014, Bernd Paulus
 % 2014-04-15
 
 %% Initial checking

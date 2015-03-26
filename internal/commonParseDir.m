@@ -2,7 +2,7 @@ function dir = commonParseDir(dir)
 % COMMONPARSEDIR Parse directory string and replace certain keywords, such
 % as "pwd" and "~".
 
-% (c) 2013-14, Till Biskup
+% Copyright (c) 2013-14, Till Biskup
 % 2014-04-08
 
 % Replace "PWD" and empty string with current directory

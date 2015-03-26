@@ -9,7 +9,7 @@ function platform = commonPlatform
 %
 % See also: COMPUTER
 
-% (c) 2007-14, Till Biskup
+% Copyright (c) 2007-14, Till Biskup
 % 2014-04-10
 
 % find platform OS

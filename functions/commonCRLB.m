@@ -27,7 +27,7 @@ function [lowerBounds,warnings] = commonCRLB(derivative,variance)
 %   fun_oopeseem_fit, fit_oopeseem, fresnelC, fresnelS
 %
 
-% (c) 2014, Bernd Paulus
+% Copyright (c) 2014, Bernd Paulus
 % 2014-04-15
 
 
