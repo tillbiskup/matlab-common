@@ -1,0 +1,10 @@
+README for the folder "tests" of the common Toolbox for Matlab(r)
+
+Copyright (c) 2015, Till Biskup
+2015-04-04
+
+This folder contains test routines that are intended to ensure proper functionality of the different routines of the toolbox.
+
+Per default, the directory is _not_ added by the installer routine to the Matlab(r) path, such as not to confuse the user with the testing routines not needed for normal operation.
+
+In order to perform the tests, manually change to this folder and execute the desired tests.

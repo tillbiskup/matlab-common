@@ -42,7 +42,7 @@ if isscalar(dataset.data) || isvector(dataset.data)
     plot1Ddata(dataset,p.Results);
 % In case we have 2D data
 elseif ismatrix(dataset.data)
-    plot2Ddata(dataset)
+    plot2Ddata(dataset,p.Results)
 % In case we have >2D data
 else
     disp('Multidimensional arrays with dim > 2 not supported yet...');

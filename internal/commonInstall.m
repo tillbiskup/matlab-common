@@ -15,7 +15,7 @@ function commonInstall(varargin)
 
 % Copyright (c) 2012-15, Till Biskup
 % Copyright (c) 2014-15, Deborah Meyer
-% 2015-03-06
+% 2015-04-04
 
 [toolboxPath,toolboxPrefix] = getToolboxPathAndPrefix;
 
@@ -153,7 +153,8 @@ end
 %% Subfunction: getToolboxPaths
 function directories = getToolboxPaths(path)
 % GETTOOLBOXPATHS Internal function returning all subdirectories of the
-% current toolbox installation.
+% current toolbox installation - except those added to the excludeList.
+excludeList = {'private','tests'};
 directories = cell(0);
 directories{1} = path;
 traverse(path);
@@ -161,7 +162,7 @@ traverse(path);
         list = dir(directory);
         for k=1:length(list)
             if list(k).isdir && ~strncmp(list(k).name,'.',1) && ...
-                    ~strcmp(list(k).name,'private')
+                    ~any(strcmp(list(k).name,excludeList))
                 directories{end+1} = fullfile(directory,list(k).name); %#ok<AGROW>
                 traverse(fullfile(directory,list(k).name));
             end
