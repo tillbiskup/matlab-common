@@ -86,18 +86,20 @@ measureStrings = {'x','y'};
 
 dataset = commonDatasetCreate();
 
-dataset.data = ...
-    createData(x,y,p.Results.ndims,p.Results.noise,p.Results.noiseLevel);
+dataset.data = createData(...
+    x,y,p.Results.ndims,p.Results.noise,p.Results.noiseLevel);
 
 dataset = addAxes(dataset,'data',x,measureStrings,p.Results.ndims);
 
 if p.Results.origData
-    dataset.origData = createData(x,y,p.Results.dim);
+    dataset.origData = createData(...
+        x,y,p.Results.dim,p.Results.noise,p.Results.noiseLevel);
     dataset = addAxes(dataset,'origData',x,measureStrings,p.Results.ndims);
 end
 
 if p.Results.calculated
-    dataset.calculated = createData(x,y,p.Results.calculatedDim);
+    dataset.calculated = createData(...
+        x,y,p.Results.calculatedDim,p.Results.noise,p.Results.noiseLevel);
     dataset = addAxes(dataset,'calculated',x,measureStrings,...
         p.Results.calculatedDim);
 end

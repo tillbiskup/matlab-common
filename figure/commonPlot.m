@@ -97,9 +97,9 @@ switch lower(p.Results.title)
     case 'none'
         title('');
     case 'auto'
-        title(dataset.label);
+        title(commonStringEscape(dataset.label,'TeX'));
     otherwise
-        title(p.Results.title);
+        title(commonStringEscape(p.Results.title,'TeX'));
 end
 
 % Handle zero line
