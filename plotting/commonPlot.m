@@ -48,7 +48,8 @@ function commonPlot(dataset,varargin)
 % SEE ALSO: plot
 
 % Copyright (c) 2015, Till Biskup
-% 2015-04-05
+% Copyright (c) 2015, Deborah Meyer
+% 2015-04-08
 
 % Set default line properties
 % NOTE: Every property is allowed that is understood by the "line" command
@@ -162,15 +163,17 @@ function addZeroLines(lineProperties)
 xLimits = get(gca,'XLim');
 yLimits = get(gca,'YLim');
 
-if diff([xLimits(2) xLimits(1)]) < 0
+hLine = [];
+
+if prod(xLimits) <= 0
     hold on
-    hLine(1) = line([0 0],yLimits);
+    hLine(end+1) = line([0 0],yLimits);
     hold off
 end
 
-if diff([xLimits(2) xLimits(1)]) < 0
+if prod(yLimits) <= 0
     hold on
-    hLine(2) = line(xLimits,[0 0]);
+    hLine(end+1) = line(xLimits,[0 0]);
     hold off
 end
 
