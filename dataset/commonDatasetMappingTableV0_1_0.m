@@ -1,9 +1,9 @@
-function table = commonDatasetMappingTableV0_0_1
-% COMMONDATASETMAPPINGTABLEV0_0_1 Mapping table for mapping common info
-% file (v. 0.0.1) contents to dataset.
+function table = commonDatasetMappingTableV0_1_0
+% COMMONDATASETMAPPINGTABLEV0_1_0 Mapping table for mapping common info
+% file (v. 0.1.0) contents to dataset.
 %
 % Usage
-%   table = commonDatasetMappingTableV0_0_1
+%   table = commonDatasetMappingTableV0_1_0
 %
 %   table - cell (nx3)
 %           1st column: field of info structure returned by
@@ -29,7 +29,8 @@ function table = commonDatasetMappingTableV0_0_1
 % commonInfofileMappingTableHelper
 
 % Copyright (c) 2014-15, Till Biskup
-% 2015-03-25
+% Copyright (c) 2015, Deborah Meyer
+% 2015-04-09
 
 table = {...
     'general.dateStart','parameters.date.start',''; ...
