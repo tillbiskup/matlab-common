@@ -1,7 +1,7 @@
 function dataset = commonDatasetMapInfo(dataset,info,format)
 % COMMONDATASETMAPINFO Map info from info file to dataset structure.
 %
-% Usage
+% Usage:
 %   dataset = commonDatasetMapInfo(dataset,info,format)
 %
 %   dataset - stucture
@@ -14,10 +14,18 @@ function dataset = commonDatasetMapInfo(dataset,info,format)
 %   format  - struct
 %             Format of the info file as returned by commonInfofileLoad
 %
+% NOTE FOR DEVELOPERS: The corresponding <PREFIX>datasetMapInfo routine
+% needs to call ALWAYS directly this commonDatasetMapinfo routine in order
+% to work properly. Otherwise it will try to look for the mapping table in
+% the wrong toolbox (if cascading more than one toolbox, e.g.,
+% cwEPR->EPR->common). Cascading of mapping tables is EXCLUSIVELY done in
+% the respective <PREFIX>datasetMappingTableVa_b_c routines.
+%
 % SEE ALSO: commonDatasetCreate, commonInfofileLoad
 
 % Copyright (c) 2014-15, Till Biskup
-% 2015-03-25
+% Copyright (c) 2015, Deborah Meyer
+% 2015-04-09
 
 mapping = getMappingTable(format.version);
 

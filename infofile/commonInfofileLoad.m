@@ -23,7 +23,7 @@ function [metaData,format] = commonInfofileLoad(filename)
 %   http://www.till-biskup.de/en/software/info/
 
 % Copyright (c) 2014-15, Till Biskup
-% 2015-03-25
+% 2015-04-09
 
 metaData = struct();
 
@@ -189,11 +189,11 @@ for blockLine = 1:length(infoFileBlock)
         % Separate line along delimiter, ":" in this case
         blockLineParts = regexp(infoFileBlock{blockLine},':','split','once');
         % If there is a percent sign (aka comment), cut comment
-        if strfind(blockLineParts{2},' %')
-            blockLineParts{2} = strtrim(...
-                blockLineParts{2}(1:strfind(blockLineParts{2},' %')-1));
-        end
         if length(blockLineParts) == 2
+            if strfind(blockLineParts{2},' %')
+                blockLineParts{2} = strtrim(...
+                    blockLineParts{2}(1:strfind(blockLineParts{2},' %')-1));
+            end
             parsedBlock.(sanitiseFieldName(strtrim(blockLineParts{1}))) = ...
                 strtrim(blockLineParts{2});
         else
