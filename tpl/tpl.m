@@ -247,7 +247,7 @@ classdef tpl < handle
             if ~isempty(varindex)
                 varindex = str2double(varindex(2:end-1));
             end
-            if ~isfield(this.assignments,varname)
+            if ~commonIsCascadedField(this.assignments,varname)
                 return;
             end
             % Assign defaults
@@ -270,7 +270,8 @@ classdef tpl < handle
                     replacement = this.assignments.(varname)(round(varindex));
                 end
             else
-                replacement = this.assignments.(varname);
+                replacement = ...
+                    commonGetCascadedField(this.assignments,varname);
             end
             if isnumeric(replacement)
                 if isempty(strFormat)

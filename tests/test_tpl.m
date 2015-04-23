@@ -8,5 +8,7 @@ o = tpl();
 o.setTemplate('test_tpl.tpl')
 S = struct('foo','dolor','bar','elit','include',true,'really',true,'array',[3 4 5 6 7]);
 S.cell = {'a','b','c'};
+S.cascaded.field = 'cascaded Field';
+S.even.more.cascaded.field = 'even more cascaded Field';
 o.setAssignments(S)
 o.render

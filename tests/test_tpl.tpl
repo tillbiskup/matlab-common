@@ -34,3 +34,7 @@ Fantastisch!
 {{else}}
 Einen Versuch war es wert...
 {{end}}
+
+Ein kaskadiertes Feld: {{@cascaded.field}}
+
+Und noch eines: {{@even.more.cascaded.field}}

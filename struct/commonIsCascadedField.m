@@ -47,7 +47,8 @@ try
             % In case of array adjust fieldName
             fieldName = fieldName(1:min(brackets)-1);
         end
-        if length(struct.(fieldName)) < arrayInd
+        if isfield(struct,fieldName) && ...
+                length(struct.(fieldName)) < arrayInd
             isField = false;
             return;
         end
