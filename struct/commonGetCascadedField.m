@@ -22,33 +22,59 @@ function value = commonGetCascadedField (struct, fieldName, varargin)
 %
 % SEE ALSO: commonSetCascadedField
 
-% Copyright (c) 2011-14, Till Biskup
+% Copyright (c) 2011-15, Till Biskup
 % Copyright (c) 2011-13, Bernd Paulus
-% 2014-04-11
+% 2015-04-23
 
 try
+    value = '';
     % Get number of "." in fieldName
     nDots = strfind(fieldName,'.');
     curlies = strfind(fieldName,'{');
+    brackets = strfind(fieldName,'(');
     currentIsCell = false;
+    currentIsArray = false;
     % if target field is cell array
     if ~isempty(curlies)
         % ... get index of first cell array call
         cellind = str2double(fieldName(...
             min(strfind(fieldName,'{'))+1:min(strfind(fieldName,'}'))-1));
     end
+    if ~isempty(brackets)
+        % ... get index of first array call
+        arrayind = str2double(fieldName(...
+            min(strfind(fieldName,'('))+1:min(strfind(fieldName,')'))-1));
+    end
     % If there are no ".", we have the target field and can read out
     if isempty(nDots)
         if ~isempty(curlies)
             % In case of cell array adjust fieldName
-            fieldName = fieldName(1:min(curlies));
+            fieldName = fieldName(1:min(curlies)-1);
+            if ~isfield(struct,fieldName)
+                return;
+            end
             % Consider possible optional index for target vector
             if nargin == 3
                 value = struct.(fieldName){cellind}(varargin{1});
             else
                 value = struct.(fieldName){cellind};
             end
+        elseif ~isempty(brackets)
+            % In case of array adjust fieldName
+            fieldName = fieldName(1:min(brackets)-1);
+            if ~isfield(struct,fieldName)
+                return;
+            end
+            % Consider possible optional index for target vector
+            if nargin == 3
+                value = struct.(fieldName)(varargin{1});
+            else
+                value = struct.(fieldName)(arrayind);
+            end
         else
+            if ~isfield(struct,fieldName)
+                return;
+            end
             if nargin == 3
                 value = struct.(fieldName)(varargin{1});
             else
@@ -65,6 +91,14 @@ try
             % Set logical switch
             currentIsCell = true;
         end
+        % In case of array adjust fieldName
+        if ~isempty(brackets) && min(brackets) < nDots(1)
+            fieldName(min(brackets):nDots(1)-1) = [];
+            % Don't forget to refresh nDots
+            nDots = strfind(fieldName,'.');
+            % Set logical switch
+            currentIsArray = true;
+        end
         % If fieldName is not a field of struct, remove it
         if ~isfield(struct,fieldName(1:nDots(1)-1))
             struct.(fieldName(1:nDots(1)-1)) = [];
@@ -72,6 +106,8 @@ try
         % Get content of the next field
         if currentIsCell
             struct = struct.(fieldName(1:nDots(1)-1)){cellind};
+        elseif currentIsArray
+            struct = struct.(fieldName(1:nDots(1)-1))(arrayind);
         else
             struct = struct.(fieldName(1:nDots(1)-1));
         end
@@ -92,7 +128,8 @@ catch exception
     disp(fieldName);
     disp(struct);
     disp(['An exception occurred in ' ...
-        exception.stack(1).name  '.']);
+        exception.stack(1).name  ' line ' ...
+        num2str(exception.stack(1).line) '.']);
 end
 
 end
