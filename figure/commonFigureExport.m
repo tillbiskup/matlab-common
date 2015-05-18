@@ -16,6 +16,32 @@ function commonFigureExport(figureHandle,filename,varargin)
 %               automatically get the correct extension resembling the file
 %               format.
 %
+%   There is a number of optional parameters to control the export:
+%
+%   paperUnits - string
+%                One of the units understood by Matlab(r)
+%                Default: 'centimeters'
+%
+%   paperSize  - 2x1 vector
+%                Size of the paper (in paperUnits, see above)
+%
+%   paperSizeCorrection - 4x1 vector
+%                Corrections for the paper size to account for Matlab(r)'s
+%                incapabilities.
+%                Hint: Use with care and test with different types of plots
+%
+%   fontSize   - scalar
+%                Font size in pt
+%                If "setFontSize" is true, font size will be set for all
+%                children of the figure that shall be exported.
+%                Note: In contrast to the figure properties, these font
+%                sizes will _not_ be reset after exporting.
+%
+%   setFontSize - boolean
+%                Whether to set font size for all children of figure.
+%                Default: true
+%   
+%
 % A note to developers: In order to work in most common cases, the routine
 % will only change parameters of the figure, not the underlying axis or
 % other graphics handles, with the one exception being the font size of all
@@ -39,10 +65,11 @@ try
     p.addRequired('figureHandle',@ishandle);
     p.addRequired('filename',@ischar)
     p.addParamValue('paperUnits','centimeters',@ischar);
-    p.addParamValue('paperSize',[14 9],@(x)isvector && numel(x)==2);
+    p.addParamValue('paperSize',[16 11],@(x)isvector && numel(x)==2);
     p.addParamValue('paperSizeCorrection',...
-        [-.5 0.05 1.5 -0.05],@(x)isvector && numel(x)==4);
-    p.addParamValue('fontSize',9,@isscalar);
+        [-0.5 -0.1 1.25 0.25],@(x)isvector && numel(x)==4);
+    p.addParamValue('fontSize',10,@isscalar);
+    p.addParamValue('setFontSize',true,@islogical)
     p.parse(figureHandle,filename,varargin{:});
 catch exception
     disp(['(EE) ' exception.message]);
@@ -64,8 +91,10 @@ set(figureHandle,'PaperSize',fliplr(paperSize));
 set(figureHandle,'PaperPosition',...
     [0 paperSize(1)-paperSize(2) paperSize]+paperSizeCorrection);
 
-% Set font size recursively for ALL children of figure graphics handle
-setFontSize(figureHandle,fontSize);
+if setFontSize
+    % Set font size recursively for ALL children of figure graphics handle
+    settingFontSize(figureHandle,fontSize);
+end
 
 % Actual export of figure
 print(figureHandle,'-dpdf',filename);
@@ -84,7 +113,7 @@ end
 end
 
 
-function setFontSize(graphicsHandle,fontSize)
+function settingFontSize(graphicsHandle,fontSize)
 
 if isprop(graphicsHandle,'FontSize')
     set(graphicsHandle,'FontSize',fontSize);
