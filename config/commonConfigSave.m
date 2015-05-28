@@ -22,19 +22,21 @@ function [warnings] = commonConfigSave (fileName,data,varargin)
 % and their values are:
 %
 %   overwrite           - logical (true/false)
-%                         Whether to overwrite existing ini file
+%                         Whether to overwrite existing config file
+%                         Default: false
 %
 %   header              - string/cell array of strings
 %                         Header information that is added on top of the
-%                         ini file 
+%                         config file
 %
 %   addModificationDate - logical (true/false)
 %                         Whether to add modification date as last line of
 %                         header (and if there is no header, then as only
 %                         header line)
+%                         Default: true
 %
 %   commentChar         - char
-%                         Character used for comment lines in the ini file
+%                         Character used for comment lines
 %                         Default: %
 %
 %   assignmentChar      - char
@@ -50,7 +52,7 @@ function [warnings] = commonConfigSave (fileName,data,varargin)
 
 % Copyright (c) 2008-15, Till Biskup
 % Copyright (c) 2013, Bernd Paulus
-% 2015-03-23
+% 2015-05-28
 
 % Parse input arguments using the inputParser functionality
 p = inputParser;            % Create inputParser instance.

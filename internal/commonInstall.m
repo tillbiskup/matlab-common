@@ -15,7 +15,10 @@ function commonInstall(varargin)
 
 % Copyright (c) 2012-15, Till Biskup
 % Copyright (c) 2014-15, Deborah Meyer
-% 2015-04-06
+% 2015-05-28
+
+% Directory within toolbox path that contains config file templates
+configDistDir = 'configFiles';
 
 [toolboxPath,toolboxPrefix] = getToolboxPathAndPrefix;
 
@@ -32,10 +35,10 @@ end
 
 addToolboxPathsToMatlabSearchPath(installed,toolboxPath);
 
-%createConfigurationDirectory;
+createConfigurationDirectory(toolboxPrefix);
 
 if installed
-    %updateConfiguration;
+    updateConfiguration(toolboxPrefix,fullfile(info.path,configDistDir));
 end
 
 plotSuccessMessage(installed,toolboxPrefix,infoFunction);
@@ -172,7 +175,7 @@ end
 
 %% Subfunction: createConfigurationDirectory
 function confDir = createConfigurationDirectory(toolboxPrefix)
-confDir = commonParseDir(['~/.matlab-toolboxes/' toolboxPrefix]);
+confDir = commonConfigDir(toolboxPrefix);
 if ~exist(confDir,'dir')
     try
         fprintf('\nCreating local config directory... ');
@@ -187,23 +190,16 @@ end
 end
 
 %% Subfunction: updateConfiguration
-function updateConfiguration
+function updateConfiguration(toolboxPrefix,configDistDir)
 fprintf('\nUpdating configuration... ');
-confFiles = trEPRconf('files');
+confFiles = dir(fullfile(configDistDir,'*.conf.dist'));
 if isempty(confFiles)
     fprintf('done.\n');
 else
     fprintf('\n\n')
     for k=1:length(confFiles)
-        tocopy = trEPRiniFileRead(confFiles{k},'typeConversion',true);
-        master = trEPRiniFileRead([confFiles{k} '.dist'],...
-            'typeConversion',true);
-        newConf = structcopy(master,tocopy);
-        header = 'Configuration file for trEPR toolbox';
-        trEPRiniFileWrite(confFiles{k},...
-            newConf,'header',header,'overwrite',true);
-        [~,cfname,cfext] = fileparts(confFiles{k});
-        fprintf('  merging %s%s\n',cfname,cfext);
+        fprintf('  %s\n',confFiles(k).name);
+        commonConfigCreate(confFiles(k).name,'prefix',toolboxPrefix);
     end
     fprintf('\ndone.\n');
 end
