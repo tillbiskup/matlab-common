@@ -54,7 +54,7 @@ configDir = commonConfigDir(p.Results.prefix);
 header = ['Configuration file for ' p.Results.prefix ' toolbox'];
 
 % Save config file
-commonConfigSave(fullfile(configDir,path,name),config,...
+commonConfigSave(fullfile(configDir,path,[name '.conf']),config,...
     'overwrite',true,'header',header);
 
 end
