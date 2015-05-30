@@ -29,7 +29,7 @@ function structure = commonStructCopy(master,tocopy,varargin)
 %   
 
 % Copyright (c) 2012-15, Till Biskup
-% 2015-03-06
+% 2015-05-30
 
 if ~nargin
     help structcopy
@@ -67,7 +67,16 @@ try
     tocopyFieldNames = fieldnames(tocopy);
     for k=1:length(tocopyFieldNames)
         if ~isfield(master,tocopyFieldNames{k})
+            % Handle adding fields to a non-structure (will throw errors in
+            % some future Matlab(r) releases)
+            if ~isstruct(master) && ~isempty(master)
+                master = struct();
+            end
             master.(tocopyFieldNames{k}) = tocopy.(tocopyFieldNames{k});
+        elseif length(master.(tocopyFieldNames{k}))>1 && ...
+                isstruct(master.(tocopyFieldNames{k})(1)) && ...
+                length(tocopy.(tocopyFieldNames{k})) < length(master.(tocopyFieldNames{k}))
+            disp('(WW) Cannot copy: array of struct in master and struct in tocopy');
         elseif length(tocopy.(tocopyFieldNames{k}))>1 && ...
                 isstruct(tocopy.(tocopyFieldNames{k})(1))
             % Need to add additional field names before handling arrays of
