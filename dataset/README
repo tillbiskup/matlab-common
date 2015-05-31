@@ -1,0 +1,5 @@
+Important note to developers: commonSave (and commonLoad) need to be located here in "dataset" and not in "IO" due to some private functions located in the "private" directory they rely on.
+
+If you want to change this, rename the functions in private accordingly and move them out of the private directory.
+
+-- tb, 2015-05-31
