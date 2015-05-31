@@ -7,8 +7,8 @@ function structure = commonStructCopy(master,tocopy,varargin)
 % the information in "tocopy".
 %
 % Usage
-%   struct = structcopy(master,tocopy)
-%   struct = structcopy(master,tocopy,<parameter>,<value>)
+%   struct = commonStructCopy(master,tocopy)
+%   struct = commonStructCopy(master,tocopy,<parameter>,<value>)
 %
 %   master     - struct
 %                Master means here master in terms of the available fields,
@@ -29,10 +29,10 @@ function structure = commonStructCopy(master,tocopy,varargin)
 %   
 
 % Copyright (c) 2012-15, Till Biskup
-% 2015-05-30
+% 2015-05-31
 
 if ~nargin
-    help structcopy
+    help commonStructCopy
     return;
 end
 
