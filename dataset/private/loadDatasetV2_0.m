@@ -30,7 +30,8 @@ binaryFieldNames = {'data','origdata','calculated'};
 binaryDataDir = 'binaryData';
 
 try
-    [archiveDirectory,~,~] = fileparts(archiveFilenames{1});
+    [archiveDirectory,~,~] = fileparts(archiveFilenames{...
+        not(cellfun(@isempty,strfind(archiveFilenames,'VERSION')))});
     precision = char(...
         commonTextFileRead(fullfile(archiveDirectory,'PRECISION')));
     
