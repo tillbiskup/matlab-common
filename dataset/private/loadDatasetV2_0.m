@@ -19,7 +19,7 @@ function [dataStructure,warning] = loadDatasetV2_0(archiveFilenames)
 % SEE ALSO commonLoad
 
 % Copyright (c) 2015, Till Biskup
-% 2015-03-25
+% 2015-05-31
 
 dataStructure = [];
 warning = cell(0);
@@ -37,7 +37,7 @@ try
     % Read XML
     XMLfileName = fullfile(archiveDirectory,XMLfileName);
     XMLfileSerialize(XMLfileName);
-    dataStructure = xml2struct(xmlread(XMLfileName));
+    dataStructure = XML2struct(xmlread(XMLfileName));
     
     % Handle data that are saved as binary
     for binaryFieldName = 1:length(binaryFieldNames)

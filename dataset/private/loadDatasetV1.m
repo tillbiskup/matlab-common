@@ -27,7 +27,7 @@ function [dataStructure,warning] = loadDatasetV1(archiveFilenames)
 % SEE ALSO commonLoad
 
 % Copyright (c) 2015, Till Biskup
-% 2015-03-25
+% 2015-05-31
 
 dataStructure = [];
 warning = cell(0);
@@ -39,7 +39,7 @@ try
         switch ext
             case '.xml'
                 XMLfileSerialize(fullfile(pathstr,[name ext]));
-                dataStructure = xml2struct(...
+                dataStructure = XML2struct(...
                     xmlread(fullfile(pathstr,[name ext])));
             case '.dat'
                 try
