@@ -22,8 +22,8 @@ function [missingFields,wrongType] = commonDatasetCheck(dataset)
 %
 % SEE ALSO: commonDatasetCreate
 
-% Copyright (c) 2014, Till Biskup
-% 2014-04-10
+% Copyright (c) 2014-15, Till Biskup
+% 2015-05-30
 
 % Get structure of dataset corresponding to current toolbox
 datasetStructure = getDatasetStructure;
@@ -56,12 +56,7 @@ end
 
 toolboxPrefix = stack(stackIndex).name(1:end-length(suffix));
 
-if isstrprop(toolboxPrefix(end),'lower')
-    datasetCreateFunction = str2func([toolboxPrefix 'DatasetCreate']);
-else
-    datasetCreateFunction = str2func([toolboxPrefix 'datasetCreate']);
-end
-
-
+datasetCreateFunction = ...
+    str2func(commonCamelCase({toolboxPrefix, 'datasetCreate'}));
 
 end

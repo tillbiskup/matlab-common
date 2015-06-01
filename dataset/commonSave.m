@@ -61,7 +61,7 @@ function [status,exception] = commonSave(filename,struct,varargin)
 % See also COMMONLOAD, FWRITE
 
 % Copyright (c) 2010-15, Till Biskup
-% 2015-03-25
+% 2015-05-31
 
 % Assign output
 status = cell(0);
@@ -77,7 +77,7 @@ try
     p.addRequired('struct', @isstruct);
     p.addParamValue('precision','real*8',@ischar);
     p.addParamValue('extension','.xbz',@ischar);
-    p.parse(filename,struct);
+    p.parse(filename,struct,varargin{:});
 catch exception
     disp(['(EE) ' exception.message]);
     return;

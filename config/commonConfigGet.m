@@ -23,7 +23,7 @@ function config = commonConfigGet(fileName,varargin)
 % SEE ALSO: commonConfigSet, commonConfigCreate, commonConfigMerge
 
 % Copyright (c) 2015, Till Biskup
-% 2015-05-28
+% 2015-05-29
 
 % Assign default output
 config = struct();
@@ -50,6 +50,6 @@ configDir = commonConfigDir(p.Results.prefix);
 
 % Load config file
 config = ...
-    commonConfigLoad(fullfile(configDir,path,name),'typeConversion',true);
+    commonConfigLoad(fullfile(configDir,path,[name '.conf']),'typeConversion',true);
 
 end
