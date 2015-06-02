@@ -33,6 +33,10 @@ function [data,warnings] = commonConfigLoad(fileName,varargin)
 %                    Character used for starting a block
 %                    Default: [
 %
+%   blockEndChar   - char
+%                    Character used for ending a block
+%                    Default: ]
+%
 %   typeConversion - boolean
 %                    Whether or not to perform a type conversion str2num
 %
@@ -40,7 +44,7 @@ function [data,warnings] = commonConfigLoad(fileName,varargin)
 
 % Copyright (c) 2008-15, Till Biskup
 % Copyright (c) 2013, Bernd Paulus
-% 2015-03-25
+% 2015-06-02
 
 % TODO
 %	* Change handling of whitespace characters (subfunctions) thus that it
@@ -60,6 +64,7 @@ try
     p.addParamValue('commentChar','%',@ischar);
     p.addParamValue('assignmentChar','=',@ischar);
     p.addParamValue('blockStartChar','[',@ischar);
+    p.addParamValue('blockEndChar','[',@ischar);
     p.addParamValue('typeConversion',false,@islogical);
     p.parse(fileName,varargin{:});
 catch exception
@@ -68,10 +73,7 @@ catch exception
 end
 
 % Assign parameters from parser
-commentChar = p.Results.commentChar;
-assignmentChar = p.Results.assignmentChar;
-blockStartChar = p.Results.blockStartChar;
-typeConversion = p.Results.typeConversion;
+commonAssignParsedVariables(p.Results);
 
 if isempty(fileName)
     warnings{end+1} = 'No filename';
@@ -92,8 +94,9 @@ for k=1:length(configFileContents)
             && ~strcmp(configFileContents{k}(1),commentChar)
         if strcmp(configFileContents{k}(1),blockStartChar)
             % set blockname
+            blockEndCharPos = strfind(configFileContents{k},blockEndChar);
             blockname = configFileContents{k}(...
-                1+length(blockStartChar):end-length(blockStartChar));
+                1+length(blockStartChar):blockEndCharPos(1)-1);
         else
             [names] = regexp(configFileContents{k},...
                 ['(?<key>[a-zA-Z0-9._-{}]+)\s*' assignmentChar '\s*(?<val>.*)'],...
