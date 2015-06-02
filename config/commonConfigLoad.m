@@ -64,7 +64,7 @@ try
     p.addParamValue('commentChar','%',@ischar);
     p.addParamValue('assignmentChar','=',@ischar);
     p.addParamValue('blockStartChar','[',@ischar);
-    p.addParamValue('blockEndChar','[',@ischar);
+    p.addParamValue('blockEndChar',']',@ischar);
     p.addParamValue('typeConversion',false,@islogical);
     p.parse(fileName,varargin{:});
 catch exception
