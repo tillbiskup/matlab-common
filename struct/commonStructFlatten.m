@@ -20,7 +20,7 @@ function flatStructure = commonStructFlatten(structure,varargin)
 %               Default: true
 
 % Copyright (c) 2015, Till Biskup
-% 2015-06-02
+% 2015-06-03
 
 % Assign default output
 flatStructure = structure;
