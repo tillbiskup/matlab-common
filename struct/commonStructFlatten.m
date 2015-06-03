@@ -39,28 +39,20 @@ catch exception
     return;
 end
 
+flatStructure = getLeaf(structure,flatStructure);
+
+end
+
+
+function flatStructure = getLeaf(structure,flatStructure)
+
 fields = fieldnames(structure);
 for field = 1:length(fields)
-    if isstruct(structure.(fields{field})) ...
-            && ~isempty(fieldnames(structure.(fields{field})))
-        [leafName,leafValue] = getLeaf(structure.(fields{field}));
-        flatStructure.(leafName) = leafValue;
+    if isstruct(structure.(fields{field}))
+        flatStructure = getLeaf(structure.(fields{field}),flatStructure);
+        flatStructure = rmfield(flatStructure,fields{field});
     else
         flatStructure.(fields{field}) = structure.(fields{field});
-    end
-end
-
-end
-
-
-function [leafName,leafValue] = getLeaf(structure)
-
-fields = fieldnames(structure);
-for field = 1:length(fields)
-    leafName = fields{field};
-    leafValue = structure.(leafName);
-    if isstruct(leafValue)
-        [leafName,leafValue] = getLeaf(structure.(fields{field}));
     end
 end
 

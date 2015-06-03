@@ -54,7 +54,7 @@ function commonFigureExport(figureHandle,filename,varargin)
 % SEE ALSO: print, saveas
 
 % Copyright (c) 2015, Till Biskup
-% 2015-05-13
+% 2015-06-03
 
 try
     % Parse input arguments using the inputParser functionality
@@ -76,7 +76,10 @@ catch exception
     return;
 end
 
-assignParsedVariables(p.Results);
+commonAssignParsedVariables(p.Results);
+
+% TODO: Read configuration - handle different configuration files for
+% different derived toolboxes in an appropriate way.
 
 % Save figure properties - will get restored later on.
 figureProperties = get(figureHandle);
@@ -123,16 +126,6 @@ if ~isempty(children)
     for child = 1:length(children)
         setFontSize(children(child),fontSize);
     end
-end
-
-end
-
-
-function assignParsedVariables(structure)
-
-parsedVariables = fieldnames(structure);
-for variable = 1:length(parsedVariables)
-    assignin('caller',parsedVariables{variable},structure.(parsedVariables{variable}));
 end
 
 end
