@@ -17,10 +17,14 @@ function sanitisedName = commonSanitiseVariableName(name,varargin)
 % numerical characters are prepended by the letter "a". The first character
 % is converted to lower-case. Finally, if the length of the variable name
 % exceeds the return value of namelengthmax, the name gets truncated
-% accordingly. 
+% accordingly.
+%
+% NOTE: If the input name is already complying to Matlab(r)'s requirements
+% for variable names, the string is directly returned without any
+% alteration.
 
 % Copyright (c) 2015, Till Biskup
-% 2015-06-02
+% 2015-06-03
 
 % Assign default output
 sanitisedName = '';
