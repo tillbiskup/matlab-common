@@ -39,19 +39,25 @@ catch exception
     return;
 end
 
-flatStructure = getLeaf(structure,flatStructure);
+flatStructure = flattenStructure(structure,flatStructure,p.Results);
 
 end
 
 
-function flatStructure = getLeaf(structure,flatStructure)
+function flatStructure = flattenStructure(structure,flatStructure,options)
 
 fields = fieldnames(structure);
 for field = 1:length(fields)
     if isstruct(structure.(fields{field}))
-        flatStructure = getLeaf(structure.(fields{field}),flatStructure);
+        flatStructure = flattenStructure(structure.(fields{field}),...
+            flatStructure,options);
         flatStructure = rmfield(flatStructure,fields{field});
     else
+        if ~options.overwrite
+            if commonStructureHasField(flatStructure,fields{field})
+                return;
+            end
+        end
         flatStructure.(fields{field}) = structure.(fields{field});
     end
 end
