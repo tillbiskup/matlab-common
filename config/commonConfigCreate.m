@@ -20,7 +20,7 @@ function commonConfigCreate(fileName,varargin)
 % SEE ALSO: commonConfigGet, commonConfigSet, commonConfigMerge
 
 % Copyright (c) 2015, Till Biskup
-% 2015-05-28
+% 2015-06-17
 
 % Directory within toolbox path that contains config file templates
 configDistDir = 'configFiles';
@@ -72,6 +72,6 @@ else
     config = configDist;
 end
 
-commonConfigSet(fileName,config,'prefix',prefix);
+commonConfigSet(name,config,'prefix',prefix);
 
 end
