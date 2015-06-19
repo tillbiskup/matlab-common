@@ -26,8 +26,8 @@ classdef tpl < handle
 %   obj.setAssignments(S);
 %   output = obj.render();
 
-% (c) 2014, Till Biskup
-% 2014-06-24
+% Copyright (c) 2014-15, Till Biskup
+% 2015-06-19
     
     properties (Access = private)
         
@@ -178,6 +178,13 @@ classdef tpl < handle
                                 end
                                 level = level + 1;
                                 %this.expandFor();
+                            case 'foreach'
+                                if level == 0
+                                    evaluateSymbol = 'foreach';
+                                    this.posStart = idx;
+                                end
+                                level = level + 1;
+                                %this.expandFor();
                             case 'else'
                                 if level == 1
                                     this.posBranch = idx;
@@ -189,6 +196,8 @@ classdef tpl < handle
                                     switch evaluateSymbol
                                         case 'for'
                                             this.expandFor();
+                                        case 'foreach'
+                                            this.expandForeach();
                                         case 'if'
                                             this.expandIf();
                                     end
@@ -252,26 +261,33 @@ classdef tpl < handle
             end
             % Assign defaults
             strFormat = this.formatString;
+            conversion = '';
             if ~isempty(option)
                 [splitting] = regexp(option(2:end),'=','split');
                 switch lower(splitting{1})
                     case {'format','fmt','f'}
                         strFormat = [ '%' splitting{2}];
+                    case {'conversion','conv','c'}
+                        conversion = str2func(strtrim(splitting{2}));
                 end
             end
             if ~isempty(strFormat) && ~strncmpi(strFormat,'%',1)
                 strFormat = [ '%' strFormat ];
             end
+            replacement = commonGetCascadedField(this.assignments,varname);
             if ~isempty(varindex) && ...
-                    round(varindex) <= length(this.assignments.(varname))
-                if iscell(this.assignments.(varname))
-                    replacement = this.assignments.(varname){round(varindex)};
+                    round(varindex) <= length(replacement)
+                if iscell(replacement)
+                    replacement = replacement{round(varindex)};
                 else
-                    replacement = this.assignments.(varname)(round(varindex));
+                    replacement = replacement(round(varindex));
                 end
-            else
-                replacement = ...
-                    commonGetCascadedField(this.assignments,varname);
+            end
+            if ~isempty(conversion)
+                replacement = conversion(replacement);
+                if min(size(replacement)) > 1
+                    replacement = reshape(replacement',1,[]);
+                end
             end
             if isnumeric(replacement)
                 if isempty(strFormat)
@@ -388,6 +404,9 @@ classdef tpl < handle
                     range(idx) = this.assignments.(rangeString{idx}(2:end));
                 else
                     range(idx) = str2double(rangeString{idx});
+                    if isnan(range(idx))
+                        range(idx) = eval(rangeString{idx});
+                    end
                 end
             end
             
@@ -400,6 +419,52 @@ classdef tpl < handle
                 tplobj.setTemplateContent(loop);
                 assign = this.assignments;
                 assign.(variable) = idx;
+                tplobj.setAssignments(assign);
+                loopContent = [ loopContent char(13) ...
+                    strtrim(tplobj.render()) ]; %#ok<AGROW>
+            end
+            
+            % Assign output
+            this.parsedContent{this.posStart+1,2} = loopContent;
+            if this.posEnd > this.posStart+1
+                for idx = this.posStart+2:this.posEnd-1
+                    this.parsedContent{idx,2} = '';
+                end
+            end
+            
+            this.parsedContent{this.posEnd,2} = '';
+            this.removeLinefeed(this.posEnd+1);
+        end
+        
+        function expandForeach(this)
+            % EXPANDFOR Handle for loops in template
+            %
+            % @access    private
+            condition = strtrim(...
+                this.parsedContent{this.posStart,2}(length('foreach')+1:end));
+            % Empty parsedContent that is no longer needed
+            this.parsedContent{this.posStart,2} = '';
+            this.removeLinefeed(this.posStart+1);
+            
+            % Parse condition
+            condition = strtrim(condition);
+            if strncmp(condition,'@',1) ...
+                        && commonIsCascadedField(this.assignments,condition(2:end))
+                    range = [1 length(...
+                        commonGetCascadedField(this.assignments,(condition(2:end))))];
+            else
+                    range = [1 0];
+            end
+            
+            loop = this.parsedContent(this.posStart+1:this.posEnd-1,3);
+
+            % Parse loop
+            loopContent = '';
+            for idx = range(1):range(2)
+                tplobj = tpl();
+                tplobj.setTemplateContent(loop);
+                assign = this.assignments;
+                assign.idx = idx;
                 tplobj.setAssignments(assign);
                 loopContent = [ loopContent char(13) ...
                     strtrim(tplobj.render()) ]; %#ok<AGROW>
