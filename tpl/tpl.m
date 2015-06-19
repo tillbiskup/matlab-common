@@ -370,6 +370,7 @@ classdef tpl < handle
             % Evaluate contents
             tplobj = tpl();
             tplobj.setTemplateContent(content);
+            tplobj.setDelimiter(this.delimiter);
             assign = this.assignments;
             tplobj.setAssignments(assign);
             this.parsedContent{this.posStart+1,2} = tplobj.render();
@@ -417,6 +418,7 @@ classdef tpl < handle
             for idx = range(1):range(2)
                 tplobj = tpl();
                 tplobj.setTemplateContent(loop);
+                tplobj.setDelimiter(this.delimiter);
                 assign = this.assignments;
                 assign.(variable) = idx;
                 tplobj.setAssignments(assign);
@@ -462,6 +464,7 @@ classdef tpl < handle
             loopContent = '';
             for idx = range(1):range(2)
                 tplobj = tpl();
+                tplobj.setDelimiter(this.delimiter);
                 tplobj.setTemplateContent(loop);
                 assign = this.assignments;
                 assign.idx = idx;
@@ -509,6 +512,14 @@ classdef tpl < handle
             if exist(p.Results.tplDir,'dir')
                 obj.templateDir = p.Results.tplDir;
             end
+        end
+        
+        function setDelimiter(this,delimiter)
+            % SETTEMPLATEDIR Set the directory where templates are located.
+            %
+            % @param     cell delimiter
+            % @access    public
+            this.delimiter = delimiter;
         end
         
         function setTemplateDir(this,directory)
