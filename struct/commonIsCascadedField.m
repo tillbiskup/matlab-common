@@ -19,7 +19,7 @@ function isField = commonIsCascadedField(struct,fieldName)
 % SEE ALSO: commonGetCascatedField, commonSetCascadedField
 
 % Copyright (c) 2015, Till Biskup
-% 2015-04-23
+% 2015-06-20
 
 try
     isField = false;
@@ -48,7 +48,8 @@ try
             fieldName = fieldName(1:min(brackets)-1);
         end
         if isfield(struct,fieldName) && ...
-                length(struct.(fieldName)) < arrayInd
+                length(struct.(fieldName)) < arrayInd && ...
+                ~isempty(struct.(fieldName))
             isField = false;
             return;
         end
@@ -63,6 +64,9 @@ try
             % In case of array adjust fieldName
             fieldName(min(brackets):nDots(1)-1) = [];
             nDots = nDots - length(min(brackets):nDots(1)-1);
+        end
+        if ~isfield(struct,fieldName(1:nDots(1)-1))
+            return;
         end
         % Check if fieldName is a cell or array
         if iscell(struct.(fieldName(1:nDots(1)-1)))

@@ -10,7 +10,7 @@ classdef tpl < handle
 %   * include other templates from within a template using the "include"
 %     statement
 %
-%   * handle "for" and "if" statements
+%   * handle "for", "foreach", and "if" statements
 %
 % Nesting is currently only supported for variables and includes, not for
 % for and if statements.
@@ -27,7 +27,7 @@ classdef tpl < handle
 %   output = obj.render();
 
 % Copyright (c) 2014-15, Till Biskup
-% 2015-06-19
+% 2015-06-20
     
     properties (Access = private)
         
@@ -152,6 +152,7 @@ classdef tpl < handle
                     % Handle nesting
                     if strfind(this.parsedContent{idx,2},this.delimiter{1})
                         tplobj = tpl();
+                        tplobj.setDelimiter(this.delimiter);
                         tplobj.setTemplateContent(this.parsedContent{idx,2});
                         tplobj.setAssignments(this.assignments);
                         this.parsedContent{idx,2} = tplobj.render();
@@ -254,7 +255,10 @@ classdef tpl < handle
                 strtok(this.parsedContent{this.position,2}(2:end),'|');
             [varname,varindex] = strtok(varname,'(');
             if ~isempty(varindex)
-                varindex = str2double(varindex(2:end-1));
+                varindex = str2num(varindex(2:end-1)); %#ok<ST2NM>
+                if ~isnumeric(varindex)
+                    varindex = NaN;
+                end
             end
             if ~commonIsCascadedField(this.assignments,varname)
                 return;
@@ -307,7 +311,6 @@ classdef tpl < handle
             else
                 this.parsedContent{this.position,2} = replacement;
             end
-            
         end
         
         function expandInclude(this)
@@ -333,6 +336,11 @@ classdef tpl < handle
             if isfield(this.assignments,conditionString)
                 condition = this.assignments.(conditionString);
             else
+                tplobj = tpl();
+                tplobj.setDelimiter(this.delimiter);
+                tplobj.setAssignments(this.assignments);
+                tplobj.setTemplateContent(conditionString);
+                conditionString = strtrim(tplobj.render());
                 try
                     condition = eval(conditionString);
                 catch  %#ok<CTCH>
@@ -346,15 +354,18 @@ classdef tpl < handle
             this.removeLinefeed(this.posStart+1);
             if condition
                 % Empty parsedContent in else condition if available
-                if ~isempty(this.posBranch)
+                if ~isempty(this.posBranch) && this.posBranch
                     for idx=this.posBranch:this.posEnd-1
                         this.parsedContent{idx,2} = '';
                         this.removeLinefeed(idx+1);
                     end
                     content = this.parsedContent(...
                         this.posStart+1:this.posBranch-1,3);
+                else
+                    content = this.parsedContent(...
+                        this.posStart+1:this.posEnd-1,3);
                 end
-            elseif ~isempty(this.posBranch)
+            elseif ~isempty(this.posBranch) && this.posBranch
                 for idx=this.posStart:this.posBranch
                     this.parsedContent{idx,2} = '';
                     this.removeLinefeed(idx+1);
@@ -417,8 +428,8 @@ classdef tpl < handle
             loopContent = '';
             for idx = range(1):range(2)
                 tplobj = tpl();
-                tplobj.setTemplateContent(loop);
                 tplobj.setDelimiter(this.delimiter);
+                tplobj.setTemplateContent(loop);
                 assign = this.assignments;
                 assign.(variable) = idx;
                 tplobj.setAssignments(assign);
@@ -449,13 +460,26 @@ classdef tpl < handle
             this.removeLinefeed(this.posStart+1);
             
             % Parse condition
-            condition = strtrim(condition);
-            if strncmp(condition,'@',1) ...
-                        && commonIsCascadedField(this.assignments,condition(2:end))
-                    range = [1 length(...
-                        commonGetCascadedField(this.assignments,(condition(2:end))))];
+            condition = strtrim(regexp(condition,' of ','split'));
+            if length(condition) == 1
+                idxVarName = '';
+                condition = condition{1};
             else
-                    range = [1 0];
+                idxVarName = condition{1};
+                condition = condition{2};
+            end
+            if strncmp(condition,'@',1) && commonIsCascadedField(...
+                    this.assignments,condition(2:end))
+                field = commonGetCascadedField(...
+                    this.assignments,condition(2:end));
+                if isstruct(field) && length(field) == 1
+                    fieldNames = fieldnames(field);
+                    range = [1 length(fieldNames)];
+                else
+                    range = [1 length(field)];
+                end
+            else
+                range = [1 0];
             end
             
             loop = this.parsedContent(this.posStart+1:this.posEnd-1,3);
@@ -467,7 +491,32 @@ classdef tpl < handle
                 tplobj.setDelimiter(this.delimiter);
                 tplobj.setTemplateContent(loop);
                 assign = this.assignments;
-                assign.idx = idx;
+                if isempty(idxVarName)
+                    field = commonGetCascadedField(...
+                        this.assignments,condition(2:end));
+                    if isstruct(field) && length(field) == 1
+                        fieldNames = fieldnames(field);
+                        assign = commonSetCascadedField(...
+                            assign,[condition(2:end) '.fieldname'],...
+                            fieldNames{idx});
+                        assign = commonSetCascadedField(...
+                            assign,[condition(2:end) '.fieldvalue'],...
+                            field.(fieldNames{idx}));
+                    else
+                        if iscell(field)
+                            fieldvalue = field{idx};
+                        else
+                            fieldvalue = field(idx);
+                        end
+                        if isempty(fieldvalue)
+                            fieldvalue = ' ';
+                        end
+                        assign = commonSetCascadedField(...
+                            assign,condition(2:end),fieldvalue);
+                    end
+                else
+                    assign.(idxVarName) = idx;
+                end
                 tplobj.setAssignments(assign);
                 loopContent = [ loopContent char(13) ...
                     strtrim(tplobj.render()) ]; %#ok<AGROW>
