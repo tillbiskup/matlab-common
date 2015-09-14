@@ -51,6 +51,14 @@ function commonFigureExport(figureHandle,filename,varargin)
 % Matlab(r), particularly 2014b and newer, making use of a completely new
 % graphics stack.
 %
+% A note to developers of derived toolboxes: In order to load the proper
+% configuration of your own toolbox and be independent of the configuration
+% distributed with the common toolbox, you can pass the contents of your
+% own configuration with the call of commonFigureExport:
+%
+%   config = PREFIXconfigGet('<yourFileName>');
+%   commonFigureExport(figureHandle,filename,'config',config);
+%
 % SEE ALSO: print, saveas
 
 % Copyright (c) 2015, Till Biskup
@@ -69,7 +77,8 @@ try
     p.addParamValue('paperSizeCorrection',...
         [-0.5 -0.1 1.25 0.25],@(x)isvector && numel(x)==4);
     p.addParamValue('fontSize',10,@isscalar);
-    p.addParamValue('setFontSize',true,@islogical)
+    p.addParamValue('setFontSize',true,@islogical);
+    p.addParamValue('config',struct(),@isstruct);
     p.parse(figureHandle,filename,varargin{:});
 catch exception
     disp(['(EE) ' exception.message]);
@@ -80,6 +89,9 @@ commonAssignParsedVariables(p.Results);
 
 % TODO: Read configuration - handle different configuration files for
 % different derived toolboxes in an appropriate way.
+if isempty(fieldnames(config)) %#ok<NODEF>
+    config = commonConfigGet('figureExport');
+end
 
 % Save figure properties - will get restored later on.
 figureProperties = get(figureHandle);
