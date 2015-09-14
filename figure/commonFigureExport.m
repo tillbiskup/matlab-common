@@ -54,7 +54,7 @@ function commonFigureExport(figureHandle,filename,varargin)
 % SEE ALSO: print, saveas
 
 % Copyright (c) 2015, Till Biskup
-% 2015-06-03
+% 2015-09-14
 
 try
     % Parse input arguments using the inputParser functionality
@@ -124,7 +124,7 @@ end
 children = allchild(graphicsHandle);
 if ~isempty(children)
     for child = 1:length(children)
-        setFontSize(children(child),fontSize);
+        settingFontSize(children(child),fontSize);
     end
 end
 
