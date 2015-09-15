@@ -2,8 +2,8 @@ function files = commonConfigFiles(varargin)
 % COMMONCONFIGFILES Return list of available configuration files.
 %
 % Usage
-%   files = commonConfigGet()
-%   files = commonConfigGet(<param>,<value>)
+%   files = commonConfigFiles()
+%   files = commonConfigFiles(<param>,<value>)
 %
 %   files - cell array (of strings)
 %           Name of config files available for the toolbox and located in
@@ -24,7 +24,7 @@ function files = commonConfigFiles(varargin)
 % commonConfigMerge
 
 % Copyright (c) 2015, Till Biskup
-% 2015-06-01
+% 2015-09-15
 
 % Assign default output
 files = cell(0);
