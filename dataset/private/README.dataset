@@ -1,7 +1,7 @@
 This directory contains a dataset according to the specifications layed out on its respective website (for details, see below).
 
 Copyright (c) 2015, Till Biskup
-2015-03-25
+2015-09-18
 
 Files and their meaning:
 
@@ -24,7 +24,7 @@ binaryData/calculated.dim - text (OPTIONAL)
   dimension of calculated data of the dataset.
 
 structure.xml - XML
-  structure containing information accompagnying the data
+  structure containing information accompanying the data
 
 VERSION - text
   version information of the dataset storage format
