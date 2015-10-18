@@ -15,14 +15,15 @@ function commonInstall(varargin)
 
 % Copyright (c) 2012-15, Till Biskup
 % Copyright (c) 2014-15, Deborah Meyer
-% 2015-05-28
+% 2015-10-18
 
 % Directory within toolbox path that contains config file templates
 configDistDir = 'configFiles';
 
 [toolboxPath,toolboxPrefix] = getToolboxPathAndPrefix;
 
-infoFunction = str2func(commonCamelCase({toolboxPrefix,'info'}));
+% NOTE: Can't use "commonCamelCase" here, as it is not yet available...
+infoFunction = str2func(camelCase({toolboxPrefix,'info'}));
 info = infoFunction();
 
 installed = checkInstallStatus(toolboxPath);
@@ -62,6 +63,17 @@ toolboxPrefix = stack(stackIndex).name(1:end-length('install'));
  
 end
 
+%% Subfunction: camelCase
+function outString = camelCase(inStrings)
+for inString = 1:length(inStrings)-1
+    if isstrprop(inStrings{inString}(end),'lower')
+        inStrings{inString+1}(1) = upper(inStrings{inString+1}(1));
+    else
+        inStrings{inString+1}(1) = lower(inStrings{inString+1}(1));
+    end
+end
+outString = [inStrings{:}];
+end
 
 %% Subfunction: checkInstallStatus
 function installed = checkInstallStatus(toolboxPath)
