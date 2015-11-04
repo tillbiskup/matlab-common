@@ -9,10 +9,10 @@ function area = common_fitAreaDefine(dataset)
 %   area     - boolean vector
 %
 
-% Copyright (c) 2014, Simona Huwiler, Till Biskup
-% 2015-03-20
+% Copyright (c) 2014-15, Till Biskup
+% 2015-11-04
 
-B0=dataset.axes(1).values;
+B0=dataset.axes.data(1).values;
 spectrum = dataset.data;
 
 % Define vector with indices for B0

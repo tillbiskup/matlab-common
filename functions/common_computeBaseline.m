@@ -34,7 +34,7 @@ function baseline = common_computeBaseline(dataset,coefficients,varargin)
 % Copyright (c) 2014-15, Till Biskup
 % Copyright (c) 2014-15, Simona Huwiler
 % Copyright (c) 2015, Deborah Meyer
-% 2015-03-20
+% 2015-11-04
 
 
 baseline = 0;
@@ -67,7 +67,7 @@ coeff = coefficients(1:p.Results.degree);
 
 switch lower(p.Results.kind)
     case 'polynomial'
-        baseline = polyval(coeff,dataset.axes(1).values);
+        baseline = polyval(coeff,dataset.axes.data(1).values);
     case 'exponential'
         % Schreiben wir uns den selbst?
     otherwise
