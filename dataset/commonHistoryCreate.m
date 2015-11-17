@@ -49,6 +49,10 @@ function history = commonHistoryCreate(varargin)
 %                                  information used for generating reports
 %                                  via templates
 %
+%                   reversible   - boolean
+%                                  information if performed operation is
+%                                  reversible
+%
 %   versionString - string (OPTIONAL)
 %                   version information of specific history record
 %                   Only used when called from within another function of
@@ -64,10 +68,10 @@ function history = commonHistoryCreate(varargin)
 
 % Copyright (c) 2014, Till Biskup
 % Copyright (c) 2014-15, Deborah Meyer
-% 2015-03-16
+% 2015-11-17
 
 % Define version of dataset structure
-structureVersion = '0.1';
+structureVersion = '0.2';
 
 % Get toolbox info
 infoFunction = getToolboxInfoFunction;
@@ -85,6 +89,7 @@ history = struct(...
     'functionName','',...
     'kind','', ...
     'purpose','', ...
+    'reversible', true, ...
     'tplVariables',struct() ...
     );
 % NOTE: Matlab doesn't handle cells defined in structs together with other
