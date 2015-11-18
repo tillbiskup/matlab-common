@@ -66,9 +66,9 @@ function history = commonHistoryCreate(varargin)
 %
 % SEE ALSO: commonDatasetCreate
 
-% Copyright (c) 2014, Till Biskup
+% Copyright (c) 2014-15, Till Biskup
 % Copyright (c) 2014-15, Deborah Meyer
-% 2015-11-17
+% 2015-11-18
 
 % Define version of dataset structure
 structureVersion = '0.2';
@@ -76,6 +76,15 @@ structureVersion = '0.2';
 % Get toolbox info
 infoFunction = getToolboxInfoFunction;
 toolboxInfo = infoFunction();
+
+% Get name of calling function
+[stack,~] = dbstack();
+initialCaller = stack(end).name;
+if isempty(strfind(initialCaller,'istoryCreate'))
+    functionName = initialCaller;
+else
+    functionName = '';
+end
 
 % Define history record structure
 history = struct(...
@@ -86,7 +95,7 @@ history = struct(...
         'matlab',version,...
         'toolbox',toolboxInfo.version ...
         ),...
-    'functionName','',...
+    'functionName',functionName,...
     'kind','', ...
     'purpose','', ...
     'reversible', true, ...
