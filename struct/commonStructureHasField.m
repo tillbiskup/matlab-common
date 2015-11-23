@@ -14,16 +14,20 @@ function trueOrFalse = commonStructureHasField(structure,field)
 %
 % SEE ALSO: isfield
 
-% Copyright (c) 2014, Till Biskup
-% 2014-04-11
+% Copyright (c) 2014-15, Till Biskup
+% 2015-11-23
 
 nDots = strfind(field,'.');
 
 if isempty(nDots)
     trueOrFalse = isfield(structure,field);
 else
-    trueOrFalse = commonStructureHasField(...
-        structure.(field(1:nDots(1)-1)),field(nDots(1)+1:end));
+    if isfield(structure,field(1:nDots(1)-1))
+        trueOrFalse = commonStructureHasField(...
+            structure.(field(1:nDots(1)-1)),field(nDots(1)+1:end));
+    else
+        trueOrFalse = false;
+    end
 end
 
 end
