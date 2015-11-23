@@ -68,7 +68,7 @@ function history = commonHistoryCreate(varargin)
 
 % Copyright (c) 2014-15, Till Biskup
 % Copyright (c) 2014-15, Deborah Meyer
-% 2015-11-18
+% 2015-11-23
 
 % Define version of dataset structure
 structureVersion = '0.2';
@@ -79,11 +79,13 @@ toolboxInfo = infoFunction();
 
 % Get name of calling function
 [stack,~] = dbstack();
-initialCaller = stack(end).name;
-if isempty(strfind(initialCaller,'istoryCreate'))
-    functionName = initialCaller;
-else
-    functionName = '';
+functionName = '';
+for layer = 1:length(stack)
+    initialCaller = stack(layer).name;
+    if isempty(strfind(initialCaller,'istoryCreate'))
+        functionName = initialCaller;
+        break;
+    end
 end
 
 % Define history record structure
