@@ -62,7 +62,8 @@ function commonFigureExport(figureHandle,filename,varargin)
 % SEE ALSO: print, saveas
 
 % Copyright (c) 2015, Till Biskup
-% 2015-09-14
+% Copyright (c) 2015, Deborah Meyer
+% 2015-11-24
 
 try
     % Parse input arguments using the inputParser functionality
@@ -71,7 +72,7 @@ try
     p.KeepUnmatched = true;     % Enable errors on unmatched arguments
     p.StructExpand = true;      % Enable passing arguments in a structure
     p.addRequired('figureHandle',@ishandle);
-    p.addRequired('filename',@ischar)
+    p.addRequired('filename',@ischar);
     p.addParamValue('paperUnits','centimeters',@ischar);
     p.addParamValue('paperSize',[16 11],@(x)isvector && numel(x)==2);
     p.addParamValue('paperSizeCorrection',...
@@ -119,7 +120,8 @@ print(figureHandle,'-dpdf',filename);
 properties = fieldnames(figureProperties);
 for property = 1:length(properties)
     try
-        set(gcf,properties{property},figureProperties.(properties{property}));
+        set(figureHandle,properties{property},...
+            figureProperties.(properties{property}));
     catch %#ok<CTCH>
         continue
     end
