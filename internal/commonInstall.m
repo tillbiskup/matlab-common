@@ -15,10 +15,11 @@ function commonInstall(varargin)
 
 % Copyright (c) 2012-15, Till Biskup
 % Copyright (c) 2014-15, Deborah Meyer
-% 2015-10-18
+% 2015-11-26
 
 % Directory within toolbox path that contains config file templates
 configDistDir = 'configFiles';
+templateDistDir = 'templateFiles';
 
 [toolboxPath,toolboxPrefix] = getToolboxPathAndPrefix;
 
@@ -38,8 +39,14 @@ addToolboxPathsToMatlabSearchPath(installed,toolboxPath);
 
 createConfigurationDirectory(toolboxPrefix);
 
-if installed
+if exist(fullfile(info.path,configDistDir),'dir')
     updateConfiguration(toolboxPrefix,fullfile(info.path,configDistDir));
+end
+
+createTemplateDirectory(toolboxPrefix);
+
+if exist(fullfile(info.path,templateDistDir),'dir')
+    updateTemplates(toolboxPrefix,fullfile(info.path,templateDistDir));
 end
 
 plotSuccessMessage(installed,toolboxPrefix,infoFunction);
@@ -212,6 +219,38 @@ else
     for k=1:length(confFiles)
         fprintf('  %s\n',confFiles(k).name);
         commonConfigCreate(confFiles(k).name,'prefix',toolboxPrefix);
+    end
+    fprintf('\ndone.\n');
+end
+end
+
+%% Subfunction: createTemplateDirectory
+function tplDir = createTemplateDirectory(toolboxPrefix)
+tplDir = commonTemplateDir(toolboxPrefix);
+if ~exist(tplDir,'dir')
+    try
+        fprintf('\nCreating local templates directory... ');
+        mkdir(tplDir);
+        fprintf('done.\n');
+    catch exception
+        fprintf('failed!\n');
+        disp(exception.message);
+        tplDir = '';
+    end
+end
+end
+
+%% Subfunction: updateTemplates
+function updateTemplates(toolboxPrefix,tplDistDir)
+fprintf('\nUpdating templates... ');
+tplFiles = dir(fullfile(tplDistDir,'*.conf.dist'));
+if isempty(tplFiles)
+    fprintf('done.\n');
+else
+    fprintf('\n\n')
+    for k=1:length(tplFiles)
+        fprintf('  %s\n',tplFiles(k).name);
+%         commonTemplateCreate(tplFiles(k).name,'prefix',toolboxPrefix);
     end
     fprintf('\ndone.\n');
 end
