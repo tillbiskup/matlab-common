@@ -20,7 +20,7 @@ function commonTemplateCreate(fileName,varargin)
 % SEE ALSO: commonTemplateGet, commonTemplateSet, commonTemplateMerge
 
 % Copyright (c) 2015, Till Biskup
-% 2015-11-26
+% 2015-11-27
 
 % Directory within toolbox path that contains template file templates
 templateDistDir = 'templateFiles';
@@ -63,8 +63,10 @@ if ~exist(templateDistFile,'file')
     return;
 end
 
-if exist(templateFile,'file')
-    movefile(templateFile,[templateFile '-backup-' datestr(now,30)]);
+% Check if a user-modified template file exists already and make backup
+if exist(templateFile,'file') && ...
+        ~commonTextFileIsEqual(templateFile,templateDistFile)
+    commonFileBackup(templateFile);
 end
 
 copyfile(templateDistFile,templateFile);

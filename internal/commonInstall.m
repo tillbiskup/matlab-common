@@ -243,14 +243,14 @@ end
 %% Subfunction: updateTemplates
 function updateTemplates(toolboxPrefix,tplDistDir)
 fprintf('\nUpdating templates... ');
-tplFiles = dir(fullfile(tplDistDir,'*.conf.dist'));
+tplFiles = dir(fullfile(tplDistDir,'*'));
 if isempty(tplFiles)
     fprintf('done.\n');
 else
     fprintf('\n\n')
     for k=1:length(tplFiles)
         fprintf('  %s\n',tplFiles(k).name);
-%         commonTemplateCreate(tplFiles(k).name,'prefix',toolboxPrefix);
+        commonTemplateCreate(tplFiles(k).name,'prefix',toolboxPrefix);
     end
     fprintf('\ndone.\n');
 end
