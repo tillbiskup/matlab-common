@@ -45,11 +45,19 @@ function commonPlot(dataset,varargin)
 %                        Default: 
 %                        struct('color',[0.5 0.5 0.5],'LineStyle','-');
 %
+% A note to developers of derived toolboxes: In order to load the proper
+% configuration of your own toolbox and be independent of the configuration
+% distributed with the common toolbox, you can pass the contents of your
+% own configuration with the call of commonPlot:
+%
+%   config = PREFIXconfigGet('<yourFileName>');
+%   commonPlot(dataset,'config',config);
+%
 % SEE ALSO: plot
 
 % Copyright (c) 2015, Till Biskup
 % Copyright (c) 2015, Deborah Meyer
-% 2015-05-30
+% 2015-12-15
 
 % Set default line properties
 % NOTE: Every property is allowed that is understood by the "line" command
@@ -74,10 +82,19 @@ try
     p.addParamValue('lineProperties',lineProperties,@isstruct);
     p.addParamValue('zeroLine',true,@islogical);
     p.addParamValue('zeroLineProperties',zeroLineProperties,@isstruct);
+    p.addParamValue('config',struct(),@isstruct);
     p.parse(dataset,varargin{:});
 catch exception
     disp(['(EE) ' exception.message]);
     return;
+end
+
+commonAssignParsedVariables(p.Results);
+
+% Read configuration - handle different configuration files for
+% different derived toolboxes in an appropriate way.
+if isempty(fieldnames(config)) %#ok<NODEF>
+    config = commonConfigGet('plot');
 end
 
 
