@@ -40,7 +40,7 @@ end
 if iscell(text)
     for k=1:length(text)
         if ischar(text{k})
-            fprintf(fid,'%s\n',text{k});
+            fprintf(fid,'%s\n',strtrim(text{k}));
         end
     end
 else
