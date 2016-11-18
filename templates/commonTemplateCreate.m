@@ -19,8 +19,8 @@ function commonTemplateCreate(fileName,varargin)
 %
 % SEE ALSO: commonTemplateGet, commonTemplateSet, commonTemplateMerge
 
-% Copyright (c) 2015, Till Biskup
-% 2015-11-27
+% Copyright (c) 2015-16, Till Biskup
+% 2016-11-18
 
 % Directory within toolbox path that contains template file templates
 templateDistDir = 'templateFiles';
@@ -55,7 +55,7 @@ templateDistDir = fullfile(info.path,templateDistDir);
 % Strip possible file extension for template file
 [path,name,~] = fileparts(fileName);
 
-templateDistFile = fullfile(templateDistDir,path,name);
+templateDistFile = fullfile(templateDistDir,path,[name '.dist']);
 templateFile     = fullfile(templateDir,path,name);
 
 if ~exist(templateDistFile,'file')

@@ -13,9 +13,9 @@ function commonInstall(varargin)
 % PREFIXinstall normally only calls commonInstall. If necessary, additional
 % tasks can be performed as well.
 
-% Copyright (c) 2012-15, Till Biskup
+% Copyright (c) 2012-16, Till Biskup
 % Copyright (c) 2014-15, Deborah Meyer
-% 2015-11-26
+% 2016-11-18
 
 % Directory within toolbox path that contains config file templates
 configDistDir = 'configFiles';
@@ -212,6 +212,7 @@ end
 function updateConfiguration(toolboxPrefix,configDistDir)
 fprintf('\nUpdating configuration... ');
 confFiles = dir(fullfile(configDistDir,'*.conf.dist'));
+confFiles = removeSpecialDirectories(confFiles);
 if isempty(confFiles)
     fprintf('done.\n');
 else
@@ -222,6 +223,17 @@ else
     end
     fprintf('\ndone.\n');
 end
+end
+
+%% Subfunction: removeSpecialDirectories
+function dirStruct = removeSpecialDirectories(dirStruct)
+
+for iFile = length(dirStruct):-1:1
+    if any(strcmp(dirStruct(iFile).name,{'.','..'}))
+        dirStruct(iFile) = [];
+    end
+end
+
 end
 
 %% Subfunction: createTemplateDirectory
@@ -244,6 +256,7 @@ end
 function updateTemplates(toolboxPrefix,tplDistDir)
 fprintf('\nUpdating templates... ');
 tplFiles = dir(fullfile(tplDistDir,'*'));
+tplFiles = removeSpecialDirectories(tplFiles);
 if isempty(tplFiles)
     fprintf('done.\n');
 else
