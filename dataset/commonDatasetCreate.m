@@ -28,8 +28,8 @@ function dataset = commonDatasetCreate(varargin)
 %
 % SEE ALSO: commonHistoryCreate
 
-% Copyright (c) 2014-15, Till Biskup
-% 2015-06-22
+% Copyright (c) 2014-16, Till Biskup
+% 2016-11-18
 
 % Assign output parameter
 dataset = struct();
@@ -46,7 +46,7 @@ p.addParamValue('hasOptionalFields',false,@islogical);
 p.parse(varargin{:});
 
 % Define version of dataset structure
-structureVersion = '0.4';
+structureVersion = '0.4.1';
 
 dataset.data = [];
 dataset.origdata = [];
@@ -72,7 +72,8 @@ dataset.parameters = struct(...
 dataset.parameters.purpose = cell(0);
 
 dataset.sample = struct(...
-    'name','' ...
+    'name','', ...
+    'id','' ...
     );
 dataset.sample.description = cell(0);
 dataset.sample.solvent = cell(0);
