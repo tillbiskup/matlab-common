@@ -38,7 +38,7 @@ end
 history = commonHistoryCreate();
 history.kind = 'Normalisation';
 history.purpose = 'Normalise data';
-history.reversible = false;
+history.reversible = true;
 history.parameters = {p.Results.kind};
 dataset.history{end+1} = history;
 
