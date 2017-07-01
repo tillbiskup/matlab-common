@@ -36,10 +36,10 @@ function [coefficients, resSumOfSquares] = common_fitPolynomial(dataset,area,var
 %
 % See also: common_fitAreaDefine
 
-% Copyright (c) 2014-15, Till Biskup
+% Copyright (c) 2014-17, Till Biskup
 % Copyright (c) 2014-15, Simona Huwiler
 % Copyright (c) 2015, Deborah Meyer
-% 2015-11-04
+% 2017-07-01
 
 % Give empty return parameters
 coefficients = cell(0);
@@ -66,7 +66,7 @@ end
 for polydegree = 1:length(p.Results.degrees)
     %Print polynomial degree
     fprintf('Current degree: %i\n',p.Results.degrees(polydegree));
-    
+        
     for run = 1:p.Results.runs    
         [coeffRun(run,:),S(run)] = polyfit(dataset.axes.data(1).values(area),dataset.data(area),p.Results.degrees(polydegree));
         [fitRun,delta] = polyval(coeffRun(run,:),dataset.axes.data(1).values(area),S(run));

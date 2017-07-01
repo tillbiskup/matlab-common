@@ -31,10 +31,10 @@ function baseline = common_computeBaseline(dataset,coefficients,varargin)
 
 % See also: common_fitPolynomial
 
-% Copyright (c) 2014-15, Till Biskup
+% Copyright (c) 2014-17, Till Biskup
 % Copyright (c) 2014-15, Simona Huwiler
 % Copyright (c) 2015, Deborah Meyer
-% 2015-11-04
+% 2017-07-01
 
 
 baseline = 0;
@@ -62,8 +62,11 @@ if length(coefficients) <= p.Results.degree
     return
 end
 
-
-coeff = coefficients(1:p.Results.degree);
+if p.Results.degree ~= 0
+    coeff = coefficients(1:p.Results.degree);
+else
+    coeff = coefficients;
+end
 
 switch lower(p.Results.kind)
     case 'polynomial'
