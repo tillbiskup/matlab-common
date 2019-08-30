@@ -11,8 +11,8 @@ function dataset = commonNormalise(dataset,varargin)
 %   kind    - string
 %             type of normalisation: area (detault) or amplitude
 
-% Copyright (c) 2016, Till Biskup
-% 2016-11-22
+% Copyright (c) 2016-19, Till Biskup
+% 2019-08-29
 
 try
     % Parse input arguments using the inputParser functionality
@@ -62,7 +62,7 @@ while ~isscalar(maxData)
 end
 minData = data;
 while ~isscalar(minData)
-    minData = max(minData);
+    minData = min(minData);
 end
 data = data/(maxData-minData);
 

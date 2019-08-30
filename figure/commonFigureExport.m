@@ -61,9 +61,9 @@ function commonFigureExport(figureHandle,filename,varargin)
 %
 % SEE ALSO: print, saveas
 
-% Copyright (c) 2015-16, Till Biskup
+% Copyright (c) 2015-19, Till Biskup
 % Copyright (c) 2015, Deborah Meyer
-% 2016-06-15
+% 2019-08-29
 
 try
     % Parse input arguments using the inputParser functionality
@@ -101,11 +101,11 @@ figureProperties = get(figureHandle);
 set(figureHandle,'PaperOrientation','Landscape');
 set(figureHandle,'PaperUnits',paperUnits);
 % Note: PaperSize needs to be reversed for landscape to work properly
-set(figureHandle,'PaperSize',fliplr(paperSize));
+set(figureHandle,'PaperSize',paperSize);
 % Note: paperSizeCorrection is empirically determined and applied to
 % compensate for buggy Matlab(r) figure export
 set(figureHandle,'PaperPosition',...
-    [0 paperSize(1)-paperSize(2) paperSize]+paperSizeCorrection);
+    [0 0 paperSize]+paperSizeCorrection);
 
 if setFontSize
     % Set font size recursively for ALL children of figure graphics handle

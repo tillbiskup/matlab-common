@@ -232,6 +232,7 @@ end
 % Set line properties
 for lHandle = 1:length(hLine)
     set(hLine(lHandle),lineProperties);
+    set(hLine(lHandle),'HandleVisibility','off');
 end
 
 end
