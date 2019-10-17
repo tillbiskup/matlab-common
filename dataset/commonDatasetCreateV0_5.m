@@ -40,9 +40,9 @@ p.FunctionName = mfilename; % Function name to be included in error messages
 p.KeepUnmatched = true;     % Enable errors on unmatched arguments
 p.StructExpand = true;      % Enable passing arguments in a structure
 % Add optional parameters, with default values
-p.addParamValue('numberOfAxes',2,@isscalar);
-p.addParamValue('numberOfCalculated',1,@isscalar);
-p.addParamValue('hasOptionalFields',false,@islogical);
+p.addParameter('numberOfAxes',2,@isscalar);
+p.addParameter('numberOfCalculated',1,@isscalar);
+p.addParameter('hasOptionalFields',false,@islogical);
 % Parse input arguments
 p.parse(varargin{:});
 

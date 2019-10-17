@@ -555,7 +555,7 @@ classdef tpl < handle
             % @access    public
             p = inputParser;       % Create an imputParser instance 
             p.StructExpand = true; % Allow passing arguments in a structure
-            p.addParamValue('tplDir','',@(x)ischar(x));
+            p.addParameter('tplDir','',@(x)ischar(x));
             p.parse(varargin{:});
             
             if exist(p.Results.tplDir,'dir')

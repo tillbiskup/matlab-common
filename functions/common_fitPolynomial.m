@@ -53,9 +53,9 @@ try
     p.StructExpand = true;      % Enable passing arguments in a structure
     p.addRequired('dataset', @isstruct);
     p.addRequired('area', @(x)isvector(x) && islogical(x));
-    p.addParamValue('plot',logical(true),@islogical);
-    p.addParamValue('degrees',0:9,@isvector);
-    p.addParamValue('runs',10,@isscalar);
+    p.addParameter('plot',logical(true),@islogical);
+    p.addParameter('degrees',0:9,@isvector);
+    p.addParameter('runs',10,@isscalar);
     p.parse(dataset,area,varargin{:});
 catch exception
     disp(['(EE) ' exception.message]);

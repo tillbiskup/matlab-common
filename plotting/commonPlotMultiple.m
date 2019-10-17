@@ -94,13 +94,13 @@ try
     p.KeepUnmatched = true;     % Enable errors on unmatched arguments
     p.StructExpand = true;      % Enable passing arguments in a structure
     p.addRequired('datasets', @(x)iscell(x));
-    p.addParamValue('tight',true,@islogical);
-    p.addParamValue('title','none',@ischar);
-    p.addParamValue('legendProperties',legendProperties,@isstruct);
-    p.addParamValue('lineProperties',lineProperties,@isstruct);
-    p.addParamValue('zeroLine',true,@islogical);
-    p.addParamValue('zeroLineProperties',zeroLineProperties,@isstruct);
-    p.addParamValue('config',struct(),@isstruct);
+    p.addParameter('tight',true,@islogical);
+    p.addParameter('title','none',@ischar);
+    p.addParameter('legendProperties',legendProperties,@isstruct);
+    p.addParameter('lineProperties',lineProperties,@isstruct);
+    p.addParameter('zeroLine',true,@islogical);
+    p.addParameter('zeroLineProperties',zeroLineProperties,@isstruct);
+    p.addParameter('config',struct(),@isstruct);
     p.parse(datasets,varargin{:});
 catch exception
     disp(['(EE) ' exception.message]);

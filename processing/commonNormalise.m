@@ -21,7 +21,7 @@ try
     p.KeepUnmatched = true;     % Enable errors on unmatched arguments
     p.StructExpand = true;      % Enable passing arguments in a structure
     p.addRequired('dataset', @(x)isstruct(x));
-    p.addParamValue('kind','area', @(x)ischar(x));
+    p.addParameter('kind','area', @(x)ischar(x));
     p.parse(dataset,varargin{:});
 catch exception
     disp(['(EE) ' exception.message]);

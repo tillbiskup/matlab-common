@@ -32,7 +32,7 @@ try
     p.StructExpand = true;      % Enable passing arguments in a structure
     p.addRequired('filename1', @(x)ischar(x) && exist(x,'file'));
     p.addRequired('filename2', @(x)ischar(x) && exist(x,'file'));
-%    p.addParamValue('SCnorm',true,@islogical);
+%    p.addParameter('SCnorm',true,@islogical);
     p.parse(filename1,filename2,varargin{:});
 catch exception
     disp(['(EE) ' exception.message]);

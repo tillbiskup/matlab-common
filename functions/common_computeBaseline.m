@@ -48,8 +48,8 @@ try
     p.StructExpand = true;      % Enable passing arguments in a structure
     p.addRequired('dataset', @isstruct);
     p.addRequired('coefficients', @isvector);
-    p.addParamValue('kind','polynomial',@(x)any(strcmpi(x,kindcell)));
-    p.addParamValue('degree',length(coefficients)-1,@isscalar);
+    p.addParameter('kind','polynomial',@(x)any(strcmpi(x,kindcell)));
+    p.addParameter('degree',length(coefficients)-1,@isscalar);
     p.parse(dataset,coefficients,varargin{:});
 catch exception
     disp(['(EE) ' exception.message]);

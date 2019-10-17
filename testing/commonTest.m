@@ -52,7 +52,7 @@ try
     p.KeepUnmatched = true;     % Enable errors on unmatched arguments
     p.StructExpand = true;      % Enable passing arguments in a structure
     p.addRequired('functionCall', @ischar);
-    %p.addParamValue('dims',321,@isvector);
+    %p.addParameter('dims',321,@isvector);
     p.parse(functionCall,varargin{:});
 catch exception
     disp(['(EE) ' exception.message]);

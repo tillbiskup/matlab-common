@@ -77,12 +77,12 @@ try
     p.KeepUnmatched = true;     % Enable errors on unmatched arguments
     p.StructExpand = true;      % Enable passing arguments in a structure
     p.addRequired('dataset', @(x)isstruct(x));
-    p.addParamValue('tight',true,@islogical);
-    p.addParamValue('title','auto',@ischar);
-    p.addParamValue('lineProperties',lineProperties,@isstruct);
-    p.addParamValue('zeroLine',true,@islogical);
-    p.addParamValue('zeroLineProperties',zeroLineProperties,@isstruct);
-    p.addParamValue('config',struct(),@isstruct);
+    p.addParameter('tight',true,@islogical);
+    p.addParameter('title','auto',@ischar);
+    p.addParameter('lineProperties',lineProperties,@isstruct);
+    p.addParameter('zeroLine',true,@islogical);
+    p.addParameter('zeroLineProperties',zeroLineProperties,@isstruct);
+    p.addParameter('config',struct(),@isstruct);
     p.parse(dataset,varargin{:});
 catch exception
     disp(['(EE) ' exception.message]);

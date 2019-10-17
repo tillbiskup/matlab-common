@@ -38,7 +38,7 @@ try
     p.KeepUnmatched = true;     % Enable errors on unmatched arguments
     p.StructExpand = true;      % Enable passing arguments in a structure
     p.addRequired('dataVector', @(x)(isnumeric(x) && isvector(x)));
-    p.addParamValue('noisePoints',100, @(x)isscalar(x));
+    p.addParameter('noisePoints',100, @(x)isscalar(x));
     p.parse(dataVector,varargin{:});
 catch exception
     disp(['(EE) ' exception.message]);

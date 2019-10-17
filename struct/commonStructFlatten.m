@@ -32,7 +32,7 @@ try
     p.KeepUnmatched = true;     % Enable errors on unmatched arguments
     p.StructExpand = true;      % Enable passing arguments in a structure
     p.addRequired('structure', @(x)isstruct(x));
-    p.addParamValue('overwrite',true,@(x)islogical(x));
+    p.addParameter('overwrite',true,@(x)islogical(x));
     p.parse(structure,varargin{:});
 catch exception
     disp(['(EE) ' exception.message]);

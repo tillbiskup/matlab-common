@@ -61,10 +61,10 @@ parser.KeepUnmatched = true; % Enable errors on unmatched arguments
 parser.StructExpand  = true; % Enable passing arguments in a structure
 
 parser.addRequired('prompt',@ischar);
-parser.addParamValue('default','',@ischar);
-parser.addParamValue('numeric',false,@islogical);
-parser.addParamValue('fun','',@ischar);
-parser.addParamValue('range',[],@(x)isvector(x) && length(x)>=2);
+parser.addParameter('default','',@ischar);
+parser.addParameter('numeric',false,@islogical);
+parser.addParameter('fun','',@ischar);
+parser.addParameter('range',[],@(x)isvector(x) && length(x)>=2);
 parser.parse(prompt,varargin{:});
 
 answer = parser.Results.default;

@@ -29,7 +29,7 @@ try
     p.StructExpand = true;      % Enable passing arguments in a structure
     p.addRequired('status', @isvector);
     p.addRequired('messages', @(x)iscell(x) && length(x)==length(status));
-    %p.addParamValue('dims',321,@isvector);
+    %p.addParameter('dims',321,@isvector);
     p.parse(status,messages,varargin{:});
 catch exception
     disp(['(EE) ' exception.message]);

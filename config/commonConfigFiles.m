@@ -35,7 +35,7 @@ try
     p.FunctionName = mfilename; % Include function name in error messages
     p.KeepUnmatched = true;     % Enable errors on unmatched arguments
     p.StructExpand = true;      % Enable passing arguments in a structure
-    p.addParamValue('prefix',commonGetPrefix(mfilename), @(x)ischar(x));
+    p.addParameter('prefix',commonGetPrefix(mfilename), @(x)ischar(x));
     p.parse(varargin{:});
 catch exception
     disp(['(EE) ' exception.message]);

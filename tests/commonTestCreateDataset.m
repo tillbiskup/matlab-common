@@ -62,14 +62,14 @@ try
     p.FunctionName = mfilename; % Include function name in error messages
     p.KeepUnmatched = true;     % Enable errors on unmatched arguments
     p.StructExpand = true;      % Enable passing arguments in a structure
-    p.addParamValue('ndims',1,@isscalar);
-    p.addParamValue('dims',321,@isvector);
-    p.addParamValue('limits',[-16 16],@ismatrix);
-    p.addParamValue('origData',false,@islogical);
-    p.addParamValue('calculated',false,@islogical);
-    p.addParamValue('calculatedDim',1,@isscalar);
-    p.addParamValue('noise',false,@islogical);
-    p.addParamValue('noiseLevel',0.1,@isscalar);
+    p.addParameter('ndims',1,@isscalar);
+    p.addParameter('dims',321,@isvector);
+    p.addParameter('limits',[-16 16],@ismatrix);
+    p.addParameter('origData',false,@islogical);
+    p.addParameter('calculated',false,@islogical);
+    p.addParameter('calculatedDim',1,@isscalar);
+    p.addParameter('noise',false,@islogical);
+    p.addParameter('noiseLevel',0.1,@isscalar);
     p.parse(varargin{:});
 catch exception
     disp(['(EE) ' exception.message]);

@@ -61,12 +61,12 @@ p.KeepUnmatched = true;     % Enable errors on unmatched arguments
 p.StructExpand = true;      % Enable passing arguments in a structure
 p.addRequired('fileName', @(x)ischar(x));
 p.addRequired('data', @(x)isstruct(x));
-p.addParamValue('header',cell(0),@(x) ischar(x) || iscell(x));
-p.addParamValue('commentChar','%',@ischar);
-p.addParamValue('assignmentChar',' =',@ischar);
-p.addParamValue('overwrite',false,@islogical);
-p.addParamValue('addModificationDate',true,@islogical);
-p.addParamValue('precision',16,@isscalar);
+p.addParameter('header',cell(0),@(x) ischar(x) || iscell(x));
+p.addParameter('commentChar','%',@ischar);
+p.addParameter('assignmentChar',' =',@ischar);
+p.addParameter('overwrite',false,@islogical);
+p.addParameter('addModificationDate',true,@islogical);
+p.addParameter('precision',16,@isscalar);
 p.parse(fileName,data,varargin{:});
 
 % Assign parameters from parser

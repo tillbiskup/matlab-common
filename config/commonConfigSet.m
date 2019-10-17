@@ -31,7 +31,7 @@ try
     p.StructExpand = true;      % Enable passing arguments in a structure
     p.addRequired('fileName', @(x)ischar(x));
     p.addRequired('config', @(x)isstruct(x));
-    p.addParamValue('prefix',commonGetPrefix(mfilename), @(x)ischar(x));
+    p.addParameter('prefix',commonGetPrefix(mfilename), @(x)ischar(x));
     p.parse(fileName,config,varargin{:});
 catch exception
     disp(['(EE) ' exception.message]);

@@ -66,10 +66,10 @@ parser.KeepUnmatched = true; % Enable errors on unmatched arguments
 parser.StructExpand  = true; % Enable passing arguments in a structure
 
 parser.addRequired('options',@(x)iscell(x) && size(x,2) == 2);
-parser.addParamValue('title','Please choose an option:',@ischar);
-parser.addParamValue('prompt','Your choice',@ischar);
-parser.addParamValue('default','',@ischar);
-parser.addParamValue('multiple',false,@islogical);
+parser.addParameter('title','Please choose an option:',@ischar);
+parser.addParameter('prompt','Your choice',@ischar);
+parser.addParameter('default','',@ischar);
+parser.addParameter('multiple',false,@islogical);
 parser.parse(options,varargin{:});
 
 answer = parser.Results.default;

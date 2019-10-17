@@ -73,13 +73,13 @@ try
     p.StructExpand = true;      % Enable passing arguments in a structure
     p.addRequired('figureHandle',@ishandle);
     p.addRequired('filename',@ischar);
-    p.addParamValue('paperUnits','centimeters',@ischar);
-    p.addParamValue('paperSize',[16 11],@(x)isvector(x) && numel(x)==2);
-    p.addParamValue('paperSizeCorrection',...
+    p.addParameter('paperUnits','centimeters',@ischar);
+    p.addParameter('paperSize',[16 11],@(x)isvector(x) && numel(x)==2);
+    p.addParameter('paperSizeCorrection',...
         [-0.5 -0.1 1.25 0.25],@(x)isvector(x) && numel(x)==4);
-    p.addParamValue('fontSize',10,@isscalar);
-    p.addParamValue('setFontSize',true,@islogical);
-    p.addParamValue('config',struct(),@isstruct);
+    p.addParameter('fontSize',10,@isscalar);
+    p.addParameter('setFontSize',true,@islogical);
+    p.addParameter('config',struct(),@isstruct);
     p.parse(figureHandle,filename,varargin{:});
 catch exception
     disp(['(EE) ' exception.message]);

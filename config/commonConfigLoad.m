@@ -61,11 +61,11 @@ try
     p.KeepUnmatched = true;     % Enable errors on unmatched arguments
     p.StructExpand = true;      % Enable passing arguments in a structure
     p.addRequired('fileName', @(x)ischar(x));
-    p.addParamValue('commentChar','%',@ischar);
-    p.addParamValue('assignmentChar','=',@ischar);
-    p.addParamValue('blockStartChar','[',@ischar);
-    p.addParamValue('blockEndChar',']',@ischar);
-    p.addParamValue('typeConversion',false,@islogical);
+    p.addParameter('commentChar','%',@ischar);
+    p.addParameter('assignmentChar','=',@ischar);
+    p.addParameter('blockStartChar','[',@ischar);
+    p.addParameter('blockEndChar',']',@ischar);
+    p.addParameter('typeConversion',false,@islogical);
     p.parse(fileName,varargin{:});
 catch exception
     disp(['(EE) ' exception.message]);

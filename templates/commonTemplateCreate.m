@@ -32,7 +32,7 @@ try
     p.KeepUnmatched = true;     % Enable errors on unmatched arguments
     p.StructExpand = true;      % Enable passing arguments in a structure
     p.addRequired('fileName', @(x)ischar(x));
-    p.addParamValue('prefix','common', @(x)ischar(x));
+    p.addParameter('prefix','common', @(x)ischar(x));
     p.parse(fileName,varargin{:});
 catch exception
     disp(['(EE) ' exception.message]);
