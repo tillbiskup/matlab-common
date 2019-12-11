@@ -63,8 +63,8 @@ function commonPlotMultiple(datasets,varargin)
 %
 % SEE ALSO: plot
 
-% Copyright (c) 2018, Till Biskup
-% 2018-07-01
+% Copyright (c) 2018-19, Till Biskup
+% 2019-12-11
 
 % Set default line properties
 % NOTE: Every property is allowed that is understood by the "line" command
@@ -120,7 +120,7 @@ end
 for dataset = 1:length(datasets)
     % In case we have 1D data
     if isscalar(datasets{dataset}.data) || isvector(datasets{dataset}.data)
-        parameters.lineProperties.Color = lineColors(dataset,:);
+        parameters.lineProperties.Color = lineColors(mod(dataset,length(lineColors))+1,:);
         plot1Ddata(datasets{dataset},parameters);
         hold on;
         % In case we have >1D data
