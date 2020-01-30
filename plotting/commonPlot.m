@@ -55,9 +55,9 @@ function commonPlot(dataset,varargin)
 %
 % SEE ALSO: plot
 
-% Copyright (c) 2015, Till Biskup
+% Copyright (c) 2015-20, Till Biskup
 % Copyright (c) 2015, Deborah Meyer
-% 2015-12-15
+% 2020-01-30
 
 % Set default line properties
 % NOTE: Every property is allowed that is understood by the "line" command
@@ -152,7 +152,7 @@ end
 
 function plot2Ddata(dataset,options)
 
-imagesc(dataset.axes.data(1).values,dataset.axes.data(2).values,dataset.data);
+imagesc(dataset.axes.data(1).values,dataset.axes.data(2).values,dataset.data');
 set(gca,'YDir','normal');
 xlabel(createAxisLabelString(dataset.axes.data(1)));
 ylabel(createAxisLabelString(dataset.axes.data(2)));

@@ -39,7 +39,7 @@ function [coefficients, resSumOfSquares] = common_fitPolynomial(dataset,area,var
 % Copyright (c) 2014-19, Till Biskup
 % Copyright (c) 2014-15, Simona Huwiler
 % Copyright (c) 2015, Deborah Meyer
-% 2019-10-07
+% 2019-11-12
 
 % Give empty return parameters
 coefficients = cell(0);
@@ -74,10 +74,10 @@ for polydegree = 1:length(p.Results.degrees)
             p.Results.degrees(polydegree));
         [fitRun,delta] = polyval(...
             coeffRun(run,:),...
-            dataset.axes.data(1).values(area),...
+            reshape(dataset.axes.data(1).values(area),[],1),...
             S(run));
-        subtractedRun = reshape(dataset.data(area),[],1)-fitRun';
-        sumOfSquaresRun(run) = sum(subtractedRun.*subtractedRun);
+        subtractedRun = reshape(dataset.data(area),[],1)-fitRun;
+        sumOfSquaresRun(run) = sum(subtractedRun.^2);
     end
     
     %Get run with best fit

@@ -95,7 +95,10 @@ try
     p.StructExpand = true;      % Enable passing arguments in a structure
     p.addRequired('datasets', @(x)iscell(x));
     p.addParameter('tight',true,@islogical);
+    p.addParameter('stacked',false,@islogical);
+    p.addParameter('offset',0,@isscalar);
     p.addParameter('title','none',@ischar);
+    p.addParameter('legend',true,@islogical);
     p.addParameter('legendProperties',legendProperties,@isstruct);
     p.addParameter('lineProperties',lineProperties,@isstruct);
     p.addParameter('zeroLine',true,@islogical);
@@ -116,20 +119,53 @@ if isempty(fieldnames(config)) %#ok<NODEF>
     config = commonConfigGet('plot');
 end
 
+% Preallocate vectors
+minx = zeros(length(datasets),1);
+maxx = minx;
+miny = minx;
+maxy = maxx;
 
 for dataset = 1:length(datasets)
     % In case we have 1D data
     if isscalar(datasets{dataset}.data) || isvector(datasets{dataset}.data)
+        minx(dataset) = datasets{dataset}.axes.data(1).values(1);
+        maxx(dataset) = datasets{dataset}.axes.data(1).values(end);
+        miny(dataset) = min(datasets{dataset}.data);
+        maxy(dataset) = max(datasets{dataset}.data);
         parameters.lineProperties.Color = lineColors(mod(dataset,length(lineColors))+1,:);
-        plot1Ddata(datasets{dataset},parameters);
+        if parameters.stacked
+            offset = (dataset-1)*-1.5;
+        else
+            offset = 0;
+        end
+        plot1Ddata(datasets{dataset},parameters,offset);
         hold on;
-        % In case we have >1D data
+    % In case we have >1D data
     else
         disp('Multidimensional arrays with dim > 2 not supported yet...');
         return;
     end
 end
 hold off;
+
+% Axes tight
+if parameters.tight
+    set(gca,'XLim',[min(minx) max(maxx)]);
+    if parameters.stacked
+        if offset > 0
+            limits = [min(miny) max(maxy)+offset];
+        else
+            limits = [min(datasets{end}.data)+offset max(datasets{1}.data)];
+        end
+        limit_scaling = 0.05 / (length(datasets)-1);
+    else
+        limits = [min(miny) max(maxy)];
+        limit_scaling = 0.05;
+    end
+    set(gca,'YLim',...
+        [limits(1)-limit_scaling*diff(limits) ...
+        limits(2)+limit_scaling*diff(limits)]);
+end
 
 % Handle title
 switch lower(p.Results.title)
@@ -140,7 +176,9 @@ switch lower(p.Results.title)
 end
 
 % Handle legend
-addLegend(datasets,legendProperties)
+if p.Results.legend
+    addLegend(datasets,legendProperties)
+end
 
 % Handle zero line
 if p.Results.zeroLine
@@ -150,23 +188,15 @@ end
 end
 
 
-function plot1Ddata(dataset,options)
+function plot1Ddata(dataset,options,offset)
 
-hLine = plot(dataset.axes.data(1).values,dataset.data);
+hLine = plot(dataset.axes.data(1).values,dataset.data+offset);
 xlabel(createAxisLabelString(dataset.axes.data(1)));
 ylabel(createAxisLabelString(dataset.axes.data(2)));
 
 % Set line properties
 for lHandle = 1:length(hLine)
     set(hLine(lHandle),options.lineProperties);
-end
-
-% Axes tight
-if options.tight
-    set(gca,'XLim',dataset.axes.data(1).values([1 end]));
-    limits = [min(dataset.data) max(dataset.data)];
-    set(gca,'YLim',...
-        [limits(1)-0.05*diff(limits) limits(2)+0.05*diff(limits)]);
 end
 
 end
