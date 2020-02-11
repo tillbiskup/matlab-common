@@ -22,6 +22,10 @@ function commonPlotMultiple(datasets,varargin)
 %                        axes/ticks.
 %                        Default: true
 %
+%   stacked            - logical
+%                        Whether to stack multiple traces
+%                        Default: false
+%
 %   title              - string
 %                        Either the keyword "none" or a string that is used
 %                        as title.
@@ -63,8 +67,8 @@ function commonPlotMultiple(datasets,varargin)
 %
 % SEE ALSO: plot
 
-% Copyright (c) 2018-19, Till Biskup
-% 2019-12-11
+% Copyright (c) 2018-20, Till Biskup
+% 2020-02-11
 
 % Set default line properties
 % NOTE: Every property is allowed that is understood by the "line" command
@@ -84,7 +88,7 @@ lineColors = [ ...
     0.0, 0.0, 0.0; ...
     1.0, 0.0, 0.0; ...
     0.0, 0.0, 1.0; ...
-    0.8, 0.8, 0.0; ...
+    0.0, 0.5, 0.0; ...
     ];
 
 try
