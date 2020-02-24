@@ -1,0 +1,9 @@
+[figure]
+
+[axis]
+TickDir = out
+Box = off
+
+[legend]
+Location = northeast
+Box = off

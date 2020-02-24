@@ -68,9 +68,11 @@ function commonPlotMultiple(datasets,varargin)
 % SEE ALSO: plot
 
 % Copyright (c) 2018-20, Till Biskup
-% 2020-02-11
+% 2020-02-14
 
-% Set default line properties
+% Set default properties
+figureProperties = struct();
+axisProperties = struct();
 % NOTE: Every property is allowed that is understood by the "line" command
 lineProperties = struct(...
     'Color',[0 0 0],...
@@ -119,8 +121,20 @@ parameters = p.Results;
 
 % Read configuration - handle different configuration files for
 % different derived toolboxes in an appropriate way.
-if isempty(fieldnames(config)) %#ok<NODEF>
-    config = commonConfigGet('plot');
+if isempty(fieldnames(parameters.config))
+    config = commonConfigGet('plot','prefix','common');
+    if isfield(config, 'figure')
+        figureProperties = ...
+            commonStructCopy(config.figure, figureProperties);
+    end
+    if isfield(config, 'axis')
+        axisProperties = ...
+            commonStructCopy(config.axis, axisProperties);
+    end
+    if isfield(config, 'legend')
+        legendProperties = ...
+            commonStructCopy(config.legend, legendProperties);
+    end
 end
 
 % Preallocate vectors
@@ -136,12 +150,19 @@ for dataset = 1:length(datasets)
         maxx(dataset) = datasets{dataset}.axes.data(1).values(end);
         miny(dataset) = min(datasets{dataset}.data);
         maxy(dataset) = max(datasets{dataset}.data);
-        parameters.lineProperties.Color = lineColors(mod(dataset,length(lineColors))+1,:);
-        if parameters.stacked
-            offset = (dataset-1)*-1.5;
+        parameters.lineProperties.Color = ...
+            lineColors(mod(dataset,length(lineColors))+1,:);
+        if parameters.stacked 
+            if parameters.offset == 0
+                offset = (dataset-1)*-1.5;
+            else
+                offset = (dataset-1)*parameters.offset;
+            end
         else
             offset = 0;
         end
+        parameters.figureProperties = figureProperties;
+        parameters.axisProperties = axisProperties;
         plot1Ddata(datasets{dataset},parameters,offset);
         hold on;
     % In case we have >1D data
@@ -151,6 +172,12 @@ for dataset = 1:length(datasets)
     end
 end
 hold off;
+
+% Stacked
+if parameters.stacked
+    set(gca, 'YTick', []);
+    ylabel('');
+end
 
 % Axes tight
 if parameters.tight
@@ -202,6 +229,12 @@ ylabel(createAxisLabelString(dataset.axes.data(2)));
 for lHandle = 1:length(hLine)
     set(hLine(lHandle),options.lineProperties);
 end
+
+% Set figure properties
+set(gcf,options.figureProperties);
+
+% Set axis properties
+set(gca,options.axisProperties);
 
 end
 
