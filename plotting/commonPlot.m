@@ -57,9 +57,11 @@ function commonPlot(dataset,varargin)
 
 % Copyright (c) 2015-20, Till Biskup
 % Copyright (c) 2015, Deborah Meyer
-% 2020-01-30
+% 2020-02-15
 
-% Set default line properties
+% Set default properties
+figureProperties = struct();
+axisProperties = struct();
 % NOTE: Every property is allowed that is understood by the "line" command
 lineProperties = struct(...
     'Color',[0 0 0],...
@@ -90,20 +92,33 @@ catch exception
 end
 
 commonAssignParsedVariables(p.Results);
+parameters = p.Results;
 
 % Read configuration - handle different configuration files for
 % different derived toolboxes in an appropriate way.
-if isempty(fieldnames(config)) %#ok<NODEF>
-    config = commonConfigGet('plot');
+% Read configuration - handle different configuration files for
+% different derived toolboxes in an appropriate way.
+if isempty(fieldnames(parameters.config))
+    config = commonConfigGet('plot','prefix','common');
+    if isfield(config, 'figure')
+        figureProperties = ...
+            commonStructCopy(config.figure, figureProperties);
+    end
+    if isfield(config, 'axis')
+        axisProperties = ...
+            commonStructCopy(config.axis, axisProperties);
+    end
 end
 
+parameters.figureProperties = figureProperties;
+parameters.axisProperties = axisProperties;
 
 % In case we have 1D data
 if isscalar(dataset.data) || isvector(dataset.data)
-    plot1Ddata(dataset,p.Results);
+    plot1Ddata(dataset,parameters);
 % In case we have 2D data
 elseif ismatrix(dataset.data)
-    plot2Ddata(dataset,p.Results)
+    plot2Ddata(dataset,parameters)
 % In case we have >2D data
 else
     disp('Multidimensional arrays with dim > 2 not supported yet...');
@@ -111,19 +126,25 @@ else
 end
 
 % Handle title
-switch lower(p.Results.title)
+switch lower(parameters.title)
     case 'none'
         title('');
     case 'auto'
         title(commonStringEscape(dataset.label,'TeX'));
     otherwise
-        title(commonStringEscape(p.Results.title,'TeX'));
+        title(commonStringEscape(parameters.title,'TeX'));
 end
 
 % Handle zero line
 if p.Results.zeroLine
     addZeroLines(zeroLineProperties);
 end
+
+% Set figure properties
+set(gcf,parameters.figureProperties);
+
+% Set axis properties
+set(gca,parameters.axisProperties);
 
 end
 
