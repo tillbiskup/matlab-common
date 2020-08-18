@@ -42,9 +42,9 @@ function [data,warnings] = commonConfigLoad(fileName,varargin)
 %
 % See also: commonConfigSave 
 
-% Copyright (c) 2008-15, Till Biskup
+% Copyright (c) 2008-20, Till Biskup
 % Copyright (c) 2013, Bernd Paulus
-% 2015-06-02
+% 2020-08-18
 
 % TODO
 %	* Change handling of whitespace characters (subfunctions) thus that it
@@ -90,15 +90,16 @@ configFileContents = commonTextFileRead(fileName);
 % read parameters to structure
 blockname = '';
 for k=1:length(configFileContents)
-    if ~isempty(configFileContents{k}) ...
-            && ~strcmp(configFileContents{k}(1),commentChar)
-        if strcmp(configFileContents{k}(1),blockStartChar)
+    configFileLine = configFileContents{k};
+    if ~isempty(configFileLine) ...
+            && ~strcmp(configFileLine(1),commentChar)
+        if strcmp(configFileLine(1),blockStartChar)
             % set blockname
-            blockEndCharPos = strfind(configFileContents{k},blockEndChar);
-            blockname = commonSanitiseVariableName(configFileContents{k}(...
+            blockEndCharPos = strfind(configFileLine,blockEndChar);
+            blockname = commonSanitiseVariableName(configFileLine(...
                 1+length(blockStartChar):blockEndCharPos(1)-1));
         else
-            [names] = regexp(configFileContents{k},...
+            [names] = regexp(configFileLine,...
                 ['(?<key>[a-zA-Z0-9._-{}]+)\s*' assignmentChar '\s*(?<val>.*)'],...
                 'names');
             if ~isfield(data,blockname)
