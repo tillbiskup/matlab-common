@@ -68,7 +68,7 @@ function commonPlotMultiple(datasets,varargin)
 % SEE ALSO: plot
 
 % Copyright (c) 2018-20, Till Biskup
-% 2020-02-14
+% 2020-09-07
 
 % Set default properties
 figureProperties = struct();
@@ -142,6 +142,7 @@ minx = zeros(length(datasets),1);
 maxx = minx;
 miny = minx;
 maxy = maxx;
+offset = 0;
 
 for dataset = 1:length(datasets)
     % In case we have 1D data
@@ -152,9 +153,9 @@ for dataset = 1:length(datasets)
         maxy(dataset) = max(datasets{dataset}.data);
         parameters.lineProperties.Color = ...
             lineColors(mod(dataset,length(lineColors))+1,:);
-        if parameters.stacked 
+        if parameters.stacked
             if parameters.offset == 0
-                offset = (dataset-1)*-1.5;
+                offset = offset - (dataset-1)*-1.05*miny(dataset);
             else
                 offset = (dataset-1)*parameters.offset;
             end
@@ -256,7 +257,7 @@ if isfield(legendProperties,'Labels')
     if isempty(legendProperties.Labels)
         labels = {};
         for dataset = 1:length(datasets)
-            labels{dataset} = datasets{dataset}.label;
+            labels{dataset} = datasets{dataset}.label; %#ok<AGROW>
         end
     else
         labels = legendProperties.Labels;
@@ -265,7 +266,6 @@ if isfield(legendProperties,'Labels')
 else
     labels = {};
 end
-
 
 hl = legend(labels);
 
