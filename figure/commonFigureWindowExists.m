@@ -1,5 +1,5 @@
 function answer = commonFigureWindowExists(varargin)
-% EXISTFIGUREWINDOW Check whether there is an open figure window.
+% COMMONFIGUREWINDOWEXISTS Check whether there is an open figure window.
 %
 % Usage:
 %    TF = commonFigureWindowExists
@@ -16,8 +16,8 @@ function answer = commonFigureWindowExists(varargin)
 %
 % SEE ALSO: gcf, figure, findobj, allchild
 
-% Copyright (c) 2015, Till Biskup
-% 2015-12-15
+% Copyright (c) 2015-20, Till Biskup
+% 2020-09-25
 
 try
     % Parse input arguments using the inputParser functionality
