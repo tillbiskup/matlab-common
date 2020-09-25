@@ -68,7 +68,7 @@ function commonPlotMultiple(datasets,varargin)
 % SEE ALSO: plot
 
 % Copyright (c) 2018-20, Till Biskup
-% 2020-09-07
+% 2020-09-25
 
 % Set default properties
 figureProperties = struct();
@@ -216,6 +216,9 @@ end
 if p.Results.zeroLine
     addZeroLines(zeroLineProperties);
 end
+
+% Set tooltip precision
+commonTooltipPrecision();
 
 end
 

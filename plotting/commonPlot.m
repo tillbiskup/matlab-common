@@ -57,7 +57,7 @@ function commonPlot(dataset,varargin)
 
 % Copyright (c) 2015-20, Till Biskup
 % Copyright (c) 2015, Deborah Meyer
-% 2020-02-15
+% 2020-09-25
 
 % Set default properties
 figureProperties = struct();
@@ -145,6 +145,9 @@ set(gcf,parameters.figureProperties);
 
 % Set axis properties
 set(gca,parameters.axisProperties);
+
+% Set tooltip precision
+commonTooltipPrecision();
 
 end
 
