@@ -54,7 +54,7 @@ try
     p.addRequired('dataset', @isstruct);
     p.addRequired('area', @(x)isvector(x) && islogical(x));
     p.addParameter('plot',logical(true),@islogical);
-    p.addParameter('degrees',0:9,@isvector);
+    p.addParameter('degrees',0,@isscalar);
     p.addParameter('runs',10,@isscalar);
     p.parse(dataset,area,varargin{:});
 catch exception
@@ -62,21 +62,17 @@ catch exception
     return;
 end
 
-
-for polydegree = 1:length(p.Results.degrees)
-    %Print polynomial degree
-    fprintf('Current degree: %i\n',p.Results.degrees(polydegree));
-        
-    for run = 1:p.Results.runs    
+for col = 1:size(dataset.data, 2)
+    for run = 1:p.Results.runs
         [coeffRun(run,:),S(run)] = polyfit(...
             reshape(dataset.axes.data(1).values(area),[],1),...
-            reshape(dataset.data(area),[],1),...
-            p.Results.degrees(polydegree));
-        [fitRun,delta] = polyval(...
+            reshape(dataset.data(area, col),[],1),...
+            p.Results.degrees);
+        [fitRun,~] = polyval(...
             coeffRun(run,:),...
             reshape(dataset.axes.data(1).values(area),[],1),...
             S(run));
-        subtractedRun = reshape(dataset.data(area),[],1)-fitRun;
+        subtractedRun = reshape(dataset.data(area, col),[],1)-fitRun;
         sumOfSquaresRun(run) = sum(subtractedRun.^2);
     end
     
@@ -84,15 +80,11 @@ for polydegree = 1:length(p.Results.degrees)
     [minValue,minIndex] =  min(sumOfSquaresRun);
 
     %Get polynomial coefficients
-    coefficients{1,polydegree} = coeffRun(minIndex,:);
-
-    %Get polynomial
-    fit(polydegree,:) = polyval(coefficients{polydegree},dataset.axes.data(1).values(area),S(minIndex));
+    coefficients{1,col} = coeffRun(minIndex,:);
     
     %Residual sum of squares
-    resSumOfSquares{polydegree} = minValue;
+    resSumOfSquares{col} = minValue;
     clear coeffRun fitRun subtractedRun sumOfSquaresRun;
-
 end
 
 if p.Results.plot
