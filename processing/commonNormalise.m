@@ -9,10 +9,10 @@ function dataset = commonNormalise(dataset,varargin)
 %
 % Optional parameters:
 %   kind    - string
-%             type of normalisation: area (detault) or amplitude
+%             type of normalisation: area (default) or amplitude
 
-% Copyright (c) 2016-19, Till Biskup
-% 2019-08-29
+% Copyright (c) 2016-20, Till Biskup
+% 2020-10-01
 
 try
     % Parse input arguments using the inputParser functionality
