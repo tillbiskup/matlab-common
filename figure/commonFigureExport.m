@@ -61,9 +61,9 @@ function commonFigureExport(figureHandle,filename,varargin)
 %
 % SEE ALSO: print, saveas
 
-% Copyright (c) 2015-19, Till Biskup
+% Copyright (c) 2015-20, Till Biskup
 % Copyright (c) 2015, Deborah Meyer
-% 2019-08-29
+% 2020-11-15
 
 try
     % Parse input arguments using the inputParser functionality
@@ -76,7 +76,7 @@ try
     p.addParameter('paperUnits','centimeters',@ischar);
     p.addParameter('paperSize',[16 11],@(x)isvector(x) && numel(x)==2);
     p.addParameter('paperSizeCorrection',...
-        [-0.5 -0.1 1.25 0.25],@(x)isvector(x) && numel(x)==4);
+        [-0.25 0.1 1.25 0.25],@(x)isvector(x) && numel(x)==4);
     p.addParameter('fontSize',10,@isscalar);
     p.addParameter('setFontSize',true,@islogical);
     p.addParameter('config',struct(),@isstruct);
