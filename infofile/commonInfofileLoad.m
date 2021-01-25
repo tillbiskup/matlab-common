@@ -4,7 +4,7 @@ function [metaData,format] = commonInfofileLoad(filename)
 %
 % Usage
 %   metaData = commonInfofileLoad(filename);
-%   [metaData,identifierString] = commonInfofileLoad(filename);
+%   [metaData,format] = commonInfofileLoad(filename);
 %
 %   filename - string
 %              Name of info file to read
