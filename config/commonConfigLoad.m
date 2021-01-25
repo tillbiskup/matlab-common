@@ -42,9 +42,9 @@ function [data,warnings] = commonConfigLoad(fileName,varargin)
 %
 % See also: commonConfigSave 
 
-% Copyright (c) 2008-20, Till Biskup
+% Copyright (c) 2008-21, Till Biskup
 % Copyright (c) 2013, Bernd Paulus
-% 2020-08-18
+% 2021-01-25
 
 % TODO
 %	* Change handling of whitespace characters (subfunctions) thus that it
@@ -92,7 +92,8 @@ blockname = '';
 for k=1:length(configFileContents)
     configFileLine = configFileContents{k};
     if ~isempty(configFileLine) ...
-            && ~strcmp(configFileLine(1),commentChar)
+            && ~strcmp(configFileLine(1),commentChar) ...
+            && ~strcmp(configFileLine(1),char(13))
         if strcmp(configFileLine(1),blockStartChar)
             % set blockname
             blockEndCharPos = strfind(configFileLine,blockEndChar);
