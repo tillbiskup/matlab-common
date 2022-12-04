@@ -1,6 +1,6 @@
 # common Toolbox
 
-[![DOI](zenodo.xxxxxxx.svg)](https://doi.org/10.5281/zenodo.xxxxxxx)
+[![DOI](zenodo.7396144.svg)](https://doi.org/10.5281/zenodo.7396144)
 
 A MATLAB(r) toolbox providing basic functionality for data analysis that is used in other toolboxes, such as the [cwEPR toolbox](https://github.com/tillbiskup/matlab-cwepr). Therefore, this toolbox is a bit of a "meta toolbox". Generally this toolbox will get included into all the other toolboxes eventually.
 
@@ -32,9 +32,9 @@ Download the toolbox (usually as compressed archive), uncompress (if necessary),
 
 The cwEPR toolbox is free software. However, if you use it for your own research, please cite it accordingly:
 
-  * Till Biskup, Deborah Meyer. cwEPR toolbox (2022). [doi:10.5281/zenodo.7396037](https://doi.org/10.5281/zenodo.7396037)
+  * Till Biskup, Deborah Meyer. common toolbox (2022). [doi:10.5281/zenodo.7396144](https://doi.org/10.5281/zenodo.7396144)
 
-    [![DOI](zenodo.7396037.svg)](https://doi.org/10.5281/zenodo.7396037)
+    [![DOI](zenodo.7396144.svg)](https://doi.org/10.5281/zenodo.7396144)
 
 
 ## License
