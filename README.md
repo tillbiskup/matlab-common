@@ -1,7 +1,5 @@
 # common Toolbox
 
-[![DOI](zenodo.xxxxxxx.svg)](https://doi.org/10.5281/zenodo.xxxxxxx)
-
 A MATLAB(r) toolbox providing basic functionality for data analysis that is used in other toolboxes, such as the [cwEPR toolbox](https://github.com/tillbiskup/matlab-cwepr). Therefore, this toolbox is a bit of a "meta toolbox". Generally this toolbox will get included into all the other toolboxes eventually.
 
 This toolbox is the spiritual predecessor of the [ASpecD framework](https://docs.aspecd.de/) implemented in Python. Each processing and analysis step gets automatically logged with all parameters to ensure reproducibility. Provides basic functionality for installing and configuring as well as standard processing steps.
@@ -28,15 +26,6 @@ The common toolbox provides functions to handle, *inter alia*:
 Download the toolbox (usually as compressed archive), uncompress (if necessary), start MATLAB(r), change to the folder you have downloaded/uncompressed the toolbox files to, change to the directory `internal` and call the function `commonInstall` from within the MATLAB(r) command line. This should guide you through the installation process (and add, *inter alia*, the toolbox to the MATLAB(r) search path).
 
 
-## How to cite
-
-The cwEPR toolbox is free software. However, if you use it for your own research, please cite it accordingly:
-
-  * Till Biskup, Deborah Meyer. cwEPR toolbox (2022). [doi:10.5281/zenodo.7396037](https://doi.org/10.5281/zenodo.7396037)
-
-    [![DOI](zenodo.7396037.svg)](https://doi.org/10.5281/zenodo.7396037)
-
-
 ## License
 
 The toolbox is distributed under the GNU Lesser General Public License (LGPL) as published by the Free Software Foundation.
@@ -48,7 +37,7 @@ This ensures both, free availability in source-code form and compatibility with 
 
 * Till Biskup (2014-2022)
 
-    The principal author and main developer of the trEPR toolbox
+    The principal author and main developer of the common toolbox
 
 * Deborah Meyer (2014-15)
 

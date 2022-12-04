@@ -13,14 +13,10 @@ authors:
 repository-code: 'https://github.com/tillbiskup/matlab-common'
 url: 'https://www.trepr.de/'
 abstract: >-
-  A MATLAB(r) toolbox providing basic functionality for data analysis. Spiritual predecessor of the ASpecD framework (https://docs.aspecd.de/) implemented in Python. Each processing and analysis step gets automatically logged with all parameters to ensure reproducibility. Provides basic functionality for installing and configuring as well as standard processing steps.
+  A MATLAB(r) toolbox providing basic functionality for data analysis. Therefore, this toolbox is a bit of a "meta toolbox". Generally this toolbox will get included into all the other toolboxes eventually. Spiritual predecessor of the ASpecD framework (https://docs.aspecd.de/) implemented in Python. Each processing and analysis step gets automatically logged with all parameters to ensure reproducibility. Provides basic functionality for installing and configuring as well as standard processing steps.
 keywords:
   - "spectroscopy"
   - "data processing and analysis"
   - "reproducible science"
   - "reproducible research"
 license: LGPL-3.0
-identifiers:
-  - description: "The concept DOI of the work."
-    type: doi
-    value: 10.5281/zenodo.xxxxxxx
