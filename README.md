@@ -48,7 +48,7 @@ This ensures both, free availability in source-code form and compatibility with 
 
 * Till Biskup (2014-2022)
 
-    The principal author and main developer of the trEPR toolbox
+    The principal author and main developer of the common toolbox
 
 * Deborah Meyer (2014-15)
 
