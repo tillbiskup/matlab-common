@@ -11,7 +11,7 @@ authors:
   - given-names: Deborah
     family-names: Meyer
 repository-code: 'https://github.com/tillbiskup/matlab-common'
-url: 'https://www.trepr.de/'
+url: 'https://www.till-biskup.de/en/software/matlab/common/'
 abstract: >-
   A MATLAB(r) toolbox providing basic functionality for data analysis. Therefore, this toolbox is a bit of a "meta toolbox". Generally this toolbox will get included into all the other toolboxes eventually. Spiritual predecessor of the ASpecD framework (https://docs.aspecd.de/) implemented in Python. Each processing and analysis step gets automatically logged with all parameters to ensure reproducibility. Provides basic functionality for installing and configuring as well as standard processing steps.
 keywords:
@@ -20,3 +20,7 @@ keywords:
   - "reproducible science"
   - "reproducible research"
 license: LGPL-3.0
+identifiers:
+  - description: "The concept DOI of the work."
+    type: doi
+    value: 10.5281/zenodo.7396144
